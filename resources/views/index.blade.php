@@ -1,80 +1,159 @@
-@extends('layouts.app')
+{{-- resources/views/index.blade.php --}}
+@extends('layouts.app') {{-- Si tienes un layout general, de lo contrario deja el html completo aquí --}}
 
-@section('title', 'Perfil de Usuario')
+@section('title', 'Home Master Store')
 
 @section('content')
-<main id="mainContent">
-    <form class="datos" action="{{ route('perfil.actualizar') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <input type="hidden" name="id_usuario" value="{{ $usuario->id_usuario ?? '' }}">
-        <input type="hidden" name="imagen_url_actual" value="{{ $usuario->imagen_url_Usuario ?? asset('modules/auth/perfiles/profileDefault.png') }}">
+<div class="flex min-h-screen w-full">
+    {{-- Sidebar solo si hay usuario en sesión --}}
+    @if(session('usuario'))
+        @include('assets.layout.sidebar')
+    @endif
 
-        {{-- FOTO DE PERFIL --}}
-        <div class="foto-perfil">
-            <h2>Foto de perfil</h2>
-            <p>Sube tu foto de perfil, un retrato en primer plano es ideal. No pongas un logo, queremos verte la cara.</p>
+    @include('assets.layout.header')
 
-            <img id="preview" src="{{ $usuario->imagen_url_Usuario ?? asset('modules/auth/perfiles/profileDefault.png') }}" alt="Perfil">
+    <main id="mainContent" class="p-6 flex-1 overflow-y-auto transition-all duration-300 h-full" style="margin: auto;">   
+        <div class="hm-wrapper">
             
-            <button type="button" onclick="document.getElementById('fileFoto').click()">Subir foto de perfil</button>
-            <input type="file" id="fileFoto" name="fileFoto" accept="image/*" style="display: none;" onchange="previewFoto(event)">
-            <small>*Mínimo 500 x 500px</small>
-        </div>
+            {{-- Header con imágenes --}}
+            <header>
+                <div class="carousel">
+                    <img src="{{ asset('assets/images/index1.png') }}" alt="Ganadería 1">
+                    <img src="{{ asset('assets/images/index2.png') }}" alt="Ganadería 2">
+                    <img src="{{ asset('assets/images/index3.png') }}" alt="Ganadería 3">
+                    <img src="{{ asset('assets/images/index4.png') }}" alt="Ganadería 4">
+                </div>
+                <div class="header-content">
+                    <h1>Nuestros Productos del Campo</h1>
+                    <p>Descubre y adquiere todo lo que necesitas para tu finca...</p>
+                </div>
+            </header>
 
-        {{-- DATOS DE USUARIO --}}
-        <div class="section">
-            <h3>Datos de usuario</h3>
-            <p>Añade tus datos personales y de contacto.</p>
-            <div class="form-grid">
-                <input type="text" name="nombreCompleto" placeholder="Nombre completo" value="{{ $usuario->nombreCompleto ?? '' }}">
-                <input type="text" name="nombre_usuario" placeholder="Nombre de usuario" value="{{ $usuario->nombre_usuario ?? '' }}">
-                <input type="email" name="correo_usuario" placeholder="Correo electrónico" value="{{ $usuario->correo_usuario ?? '' }}">
-                <input type="tel" name="telefono_usuario" placeholder="Teléfono Móvil" value="{{ $usuario->telefono_usuario ?? '' }}">
-                <input type="text" name="direccion_usuario" placeholder="Dirección" value="{{ $usuario->direccion_usuario ?? '' }}">
-                <input type="password" name="contrasena" placeholder="Contraseña (dejar en blanco para no cambiar)">
+            {{-- Categorías --}}
+            <div class="hm-page-block">
+                <div class="container">
+                    <div class="header-title">
+                        <h1 data-aos="fade-up" data-aos-duration="3000">Categorías</h1>
+                    </div>
+
+                    <div class="hm-grid-category">
+                        <div class="grid-item" data-aos="fade-up" data-aos-duration="1000">
+                            <a href="#">
+                                <img src="{{ asset('assets/images/c-1.png') }}" alt="">
+                                <div class="c-info">
+                                    <h3>Todo en Productos Frescos</h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="grid-item" data-aos="fade-up" data-aos-duration="1500">
+                            <a href="#">
+                                <img src="{{ asset('assets/images/c-2.png') }}" alt="">
+                                <div class="c-info">
+                                    <h3>Todo en Lácteos y Huevos</h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="grid-item" data-aos="fade-up" data-aos-duration="2000">
+                            <a href="#">
+                                <img src="{{ asset('assets/images/c-3.png') }}" alt="">
+                                <div class="c-info">
+                                    <h3>Lo Mejor en Carnes y Embutidos</h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="grid-item" data-aos="fade-up" data-aos-duration="2000">
+                            <a href="#">
+                                <img src="{{ asset('assets/images/c-4.png') }}" alt="">
+                                <div class="c-info">
+                                    <h3>Alimentos para Animales</h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        {{-- REDES SOCIALES --}}
-        <div class="section">
-            <h3>Redes sociales</h3>
-            <p>Añade tus redes sociales.</p>
-            <div class="form-grid">
-                <input type="url" name="facebook" placeholder="Facebook URL">
-                <input type="url" name="instagram" placeholder="Instagram URL">
-                <input type="url" name="whatsapp" placeholder="Whatsapp">
+            {{-- Todos los productos --}}
+            <div class="hm-page-block all-products-section bg-fondo">
+                <div class="container">
+                    <div class="header-title" data-aos="fade-up">
+                        <h1>Todos los Productos Publicados</h1>
+                        <a href="{{ route('productos.index') }}" class="view-all-btn">Ver Todos <i class="las la-angle-right"></i></a>
+                    </div>
+
+                    <div class="carousel-container product-carousel-all" data-aos="fade-up">
+                        <button class="carousel-btn prev-btn"><i class="las la-angle-left"></i></button>
+                        <div class="carousel-track">
+                            @if($todos_los_productos->isNotEmpty())
+                                {{-- Muestra solo 10 --}}
+                                @foreach($todos_los_productos->take(10) as $producto)
+                                    @include('components.product-item', ['producto' => $producto])
+                                @endforeach
+                            @else
+                                <p class="text-center">No hay productos disponibles en este momento.</p>
+                            @endif
+                        </div>
+                        <button class="carousel-btn next-btn"><i class="las la-angle-right"></i></button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        {{-- UBICACIÓN --}}
-        <div class="section">
-            <h3>Ubicación principal</h3>
-            <p>Indica tu ubicación.</p>
-            <div class="form-grid">
-                <select name="pais">
-                    <option value="Colombia" selected>Colombia</option>
-                </select>
-                <select id="departamento" name="departamento" onchange="cargarMunicipios()">
-                    <option value="">Selecciona un departamento</option>
-                </select>
-                <select id="municipio" name="municipio">
-                    <option value="">Selecciona un municipio</option>
-                </select>
+            {{-- Productos populares --}}
+            <div class="hm-page-block">
+                <div class="container">
+                    <div class="header-title" data-aos="fade-up">
+                        <h1>Productos Populares</h1>
+                    </div>
+
+                    <ul class="hm-tabs" data-aos="fade-up">
+                        @forelse($productos_populares_tabs as $categoria_nombre => $productos_list)
+                            <li class="hm-tab-link {{ $loop->first ? 'active' : '' }}" data-tab="tab-{{ Str::slug($categoria_nombre) }}">
+                                {{ $categoria_nombre }}
+                            </li>
+                        @empty
+                            <li class="hm-tab-link active" data-tab="tab-default">Sin categorías populares</li>
+                        @endforelse
+                    </ul>
+
+                    @forelse($productos_populares_tabs as $categoria_nombre => $productos_list)
+                        <div class="tabs-content {{ $loop->first ? 'active' : '' }}" id="tab-{{ Str::slug($categoria_nombre) }}" data-aos="fade-up">
+                            @if(count($productos_list))
+                                <div class="carousel-container">
+                                    <button class="carousel-btn prev-btn"><i class="las la-angle-left"></i></button>
+                                    <div class="carousel-track">
+                                        @foreach($productos_list as $producto)
+                                            @include('components.product-item', ['producto' => $producto, 'showOldPrice' => ($categoria_nombre === 'En Oferta')])
+                                        @endforeach
+                                    </div>
+                                    <button class="carousel-btn next-btn"><i class="las la-angle-right"></i></button>
+                                </div>
+                            @else
+                                <p class="text-center">No hay productos disponibles en la categoría "{{ $categoria_nombre }}" en este momento.</p>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="tabs-content active" id="tab-default" data-aos="fade-up">
+                            <p class="text-center">No se encontraron productos populares ni categorías disponibles.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
+
+            @include('assets.layout.flooter')
         </div>
+    </main>
+</div>
 
-        <button type="submit" class="submit-btn">Guardar Cambios</button>
-    </form>
-</main>
+{{-- Modal detalle producto --}}
+<div id="productDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span> 
+        <div id="modal-body-content">
+            <div class="product-detail-loading">Cargando detalles del producto...</div>
+        </div>
+    </div>
+</div>
 
-{{-- Scripts --}}
-<script>
-    function previewFoto(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
-</script>
+@include('assets.layout.mensajesModal')
+
 @endsection
