@@ -1,5 +1,6 @@
 {{-- resources/views/index.blade.php --}}
-@extends('layouts.app') {{-- Si tienes un layout general, de lo contrario deja el html completo aquí --}}
+
+@extends('layouts.app')
 
 @section('title', 'Home Master Store')
 
@@ -7,10 +8,10 @@
 <div class="flex min-h-screen w-full">
     {{-- Sidebar solo si hay usuario en sesión --}}
     @if(session('usuario'))
-        @include('assets.layout.sidebar')
+        @include('layouts.sidebar')
     @endif
 
-    @include('assets.layout.header')
+    @include('layouts.header')
 
     <main id="mainContent" class="p-6 flex-1 overflow-y-auto transition-all duration-300 h-full" style="margin: auto;">   
         <div class="hm-wrapper">
@@ -78,16 +79,36 @@
                 <div class="container">
                     <div class="header-title" data-aos="fade-up">
                         <h1>Todos los Productos Publicados</h1>
-                        <a href="{{ route('productos.index') }}" class="view-all-btn">Ver Todos <i class="las la-angle-right"></i></a>
+                        <a href="{{ route('home.index') }}" class="view-all-btn">Ver Todos <i class="las la-angle-right"></i></a>
                     </div>
 
                     <div class="carousel-container product-carousel-all" data-aos="fade-up">
                         <button class="carousel-btn prev-btn"><i class="las la-angle-left"></i></button>
                         <div class="carousel-track">
-                            @if($todos_los_productos->isNotEmpty())
+                            @if($productos->isNotEmpty())
                                 {{-- Muestra solo 10 --}}
-                                @foreach($todos_los_productos->take(10) as $producto)
-                                    @include('components.product-item', ['producto' => $producto])
+                                @foreach($productos->take(10) as $producto)
+                                    <div class="product-card">
+                                        <div class="product-image">
+                                            <img src="{{ asset($producto->imagen_url) }}" alt="{{ $producto->nombre_producto }}">
+                                        </div>
+                                        <div class="product-info">
+                                            <h3>{{ $producto->nombre_producto }}</h3>
+                                            <p>{{ Str::limit($producto->descripcion_producto, 60) }}</p>
+
+                                            <div class="product-prices">
+                                                @if($producto->precio_anterior && $producto->precio_anterior > $producto->precio_unitario)
+                                                    <span class="old-price">${{ number_format($producto->precio_anterior, 2) }}</span>
+                                                @endif
+                                                <span class="current-price">${{ number_format($producto->precio_unitario, 2) }}</span>
+                                            </div>
+
+                                            <div class="product-actions">
+                                                <a href="{{ route('productos.show', $producto->id_producto) }}" class="btn-ver-mas">Ver Detalles</a>
+                                                <button class="btn-comprar">Agregar al Carrito</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endforeach
                             @else
                                 <p class="text-center">No hay productos disponibles en este momento.</p>
@@ -106,7 +127,7 @@
                     </div>
 
                     <ul class="hm-tabs" data-aos="fade-up">
-                        @forelse($productos_populares_tabs as $categoria_nombre => $productos_list)
+                        @forelse($productosPopularesTabs as $categoria_nombre => $productos_list)
                             <li class="hm-tab-link {{ $loop->first ? 'active' : '' }}" data-tab="tab-{{ Str::slug($categoria_nombre) }}">
                                 {{ $categoria_nombre }}
                             </li>
@@ -115,14 +136,34 @@
                         @endforelse
                     </ul>
 
-                    @forelse($productos_populares_tabs as $categoria_nombre => $productos_list)
+                    @forelse($productosPopularesTabs as $categoria_nombre => $productos_list)
                         <div class="tabs-content {{ $loop->first ? 'active' : '' }}" id="tab-{{ Str::slug($categoria_nombre) }}" data-aos="fade-up">
                             @if(count($productos_list))
                                 <div class="carousel-container">
                                     <button class="carousel-btn prev-btn"><i class="las la-angle-left"></i></button>
                                     <div class="carousel-track">
                                         @foreach($productos_list as $producto)
-                                            @include('components.product-item', ['producto' => $producto, 'showOldPrice' => ($categoria_nombre === 'En Oferta')])
+                                            <div class="product-card">
+                                                <div class="product-image">
+                                                    <img src="{{ asset($producto->imagen_url) }}" alt="{{ $producto->nombre_producto }}">
+                                                </div>
+                                                <div class="product-info">
+                                                    <h3>{{ $producto->nombre_producto }}</h3>
+                                                    <p>{{ Str::limit($producto->descripcion_producto, 60) }}</p>
+
+                                                    <div class="product-prices">
+                                                        @if($categoria_nombre === 'En Oferta' && $producto->precio_anterior)
+                                                            <span class="old-price">${{ number_format($producto->precio_anterior, 2) }}</span>
+                                                        @endif
+                                                        <span class="current-price">${{ number_format($producto->precio_unitario, 2) }}</span>
+                                                    </div>
+
+                                                    <div class="product-actions">
+                                                        <a href="{{ route('productos.show', $producto->id_producto) }}" class="btn-ver-mas">Ver Detalles</a>
+                                                        <button class="btn-comprar">Agregar al Carrito</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
                                     </div>
                                     <button class="carousel-btn next-btn"><i class="las la-angle-right"></i></button>
@@ -139,7 +180,7 @@
                 </div>
             </div>
 
-            @include('assets.layout.flooter')
+            @include('layouts.flooter')
         </div>
     </main>
 </div>
@@ -154,6 +195,6 @@
     </div>
 </div>
 
-@include('assets.layout.mensajesModal')
+@include('layouts.mensajesModal')
 
 @endsection
