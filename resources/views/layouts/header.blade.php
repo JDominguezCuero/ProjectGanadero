@@ -11,14 +11,14 @@
       $headerClasses .= " right-0"; 
     }
 @endphp
-   
+
 <div id="mainHeader" class="{{ $headerClasses }}">
     <div class="container">
         <div class="header-menu">
 
             <div class="hm-logo">
                 <a href="{{ url('index') }}">
-                <img src="{{ asset('assets/images/logo1.png') }}" alt=""> {{-- Usar asset() --}}
+                <img src="{{ asset('images/logo1.png') }}" alt=""> {{-- Usar asset() --}}
                 </a>
             </div>
 
@@ -63,7 +63,7 @@
                     @endif
                     
                     {{-- La ruta del script debe usar asset() --}}
-                    <script src="{{ asset('assets/js/notificaciones.js') }}"></script>
+                    <script src="{{ asset('js/notificaciones.js') }}"></script>
 
                     <div id="toast-notificacion" style=" /* ... (Estilos CSS) ... */ ">
                         ¡Notificación enviada al vendedor!

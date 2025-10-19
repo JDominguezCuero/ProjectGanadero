@@ -19,10 +19,10 @@
             {{-- Header con imágenes --}}
             <header>
                 <div class="carousel">
-                    <img src="{{ asset('assets/images/index1.png') }}" alt="Ganadería 1">
-                    <img src="{{ asset('assets/images/index2.png') }}" alt="Ganadería 2">
-                    <img src="{{ asset('assets/images/index3.png') }}" alt="Ganadería 3">
-                    <img src="{{ asset('assets/images/index4.png') }}" alt="Ganadería 4">
+                    <img src="{{ asset('images/index1.png') }}" alt="Ganadería 1">
+                    <img src="{{ asset('images/index2.png') }}" alt="Ganadería 2">
+                    <img src="{{ asset('images/index3.png') }}" alt="Ganadería 3">
+                    <img src="{{ asset('images/index4.png') }}" alt="Ganadería 4">
                 </div>
                 <div class="header-content">
                     <h1>Nuestros Productos del Campo</h1>
@@ -40,7 +40,7 @@
                     <div class="hm-grid-category">
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="1000">
                             <a href="#">
-                                <img src="{{ asset('assets/images/c-1.png') }}" alt="">
+                                <img src="{{ asset('images/c-1.png') }}" alt="">
                                 <div class="c-info">
                                     <h3>Todo en Productos Frescos</h3>
                                 </div>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="1500">
                             <a href="#">
-                                <img src="{{ asset('assets/images/c-2.png') }}" alt="">
+                                <img src="{{ asset('images/c-2.png') }}" alt="">
                                 <div class="c-info">
                                     <h3>Todo en Lácteos y Huevos</h3>
                                 </div>
@@ -56,7 +56,7 @@
                         </div>
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="2000">
                             <a href="#">
-                                <img src="{{ asset('assets/images/c-3.png') }}" alt="">
+                                <img src="{{ asset('images/c-3.png') }}" alt="">
                                 <div class="c-info">
                                     <h3>Lo Mejor en Carnes y Embutidos</h3>
                                 </div>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="2000">
                             <a href="#">
-                                <img src="{{ asset('assets/images/c-4.png') }}" alt="">
+                                <img src="{{ asset('images/c-4.png') }}" alt="">
                                 <div class="c-info">
                                     <h3>Alimentos para Animales</h3>
                                 </div>
