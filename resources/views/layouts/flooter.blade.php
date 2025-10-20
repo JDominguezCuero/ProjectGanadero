@@ -35,4 +35,4 @@
 </div>
 
 {{-- Script del Chatbot con asset() --}}
-<script src="{{ asset('modules/asistenteVirtual/views/js/chatbot.js') }}"></script>
+<script src="{{ asset('js/chatbot.js') }}"></script>

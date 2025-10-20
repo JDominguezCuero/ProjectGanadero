@@ -41,14 +41,7 @@ class HomeController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $producto = ProductoGanadero::findOrFail($id);
-        return view('productos.show', compact('producto'));
-    }
+    
 
     /**
      * Show the form for editing the specified resource.

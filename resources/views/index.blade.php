@@ -1,5 +1,4 @@
 {{-- resources/views/index.blade.php --}}
-
 @extends('layouts.app')
 
 @section('title', 'Home Master Store')
@@ -13,9 +12,9 @@
 
     @include('layouts.header')
 
-    <main id="mainContent" class="p-6 flex-1 overflow-y-auto transition-all duration-300 h-full" style="margin: auto;">   
+    <main id="mainContent" class="p-6 flex-1 overflow-y-auto transition-all duration-300 h-full" style="margin: auto;">
         <div class="hm-wrapper">
-            
+
             {{-- Header con imágenes --}}
             <header>
                 <div class="carousel">
@@ -26,7 +25,7 @@
                 </div>
                 <div class="header-content">
                     <h1>Nuestros Productos del Campo</h1>
-                    <p>Descubre y adquiere todo lo que necesitas para tu finca...</p>
+                    <p>Descubre y adquiere todo lo que necesitas para tu finca. Simplifica tus compras con nuestra plataforma online, diseñada para tu comodidad y la eficiencia de tu producción.</p>
                 </div>
             </header>
 
@@ -41,33 +40,25 @@
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="1000">
                             <a href="#">
                                 <img src="{{ asset('images/c-1.png') }}" alt="">
-                                <div class="c-info">
-                                    <h3>Todo en Productos Frescos</h3>
-                                </div>
+                                <div class="c-info"><h3>Todo en Productos Frescos</h3></div>
                             </a>
                         </div>
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="1500">
                             <a href="#">
                                 <img src="{{ asset('images/c-2.png') }}" alt="">
-                                <div class="c-info">
-                                    <h3>Todo en Lácteos y Huevos</h3>
-                                </div>
+                                <div class="c-info"><h3>Todo en Lácteos y Huevos</h3></div>
                             </a>
                         </div>
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="2000">
                             <a href="#">
                                 <img src="{{ asset('images/c-3.png') }}" alt="">
-                                <div class="c-info">
-                                    <h3>Lo Mejor en Carnes y Embutidos</h3>
-                                </div>
+                                <div class="c-info"><h3>Lo Mejor en Carnes y Embutidos</h3></div>
                             </a>
                         </div>
                         <div class="grid-item" data-aos="fade-up" data-aos-duration="2000">
                             <a href="#">
                                 <img src="{{ asset('images/c-4.png') }}" alt="">
-                                <div class="c-info">
-                                    <h3>Alimentos para Animales</h3>
-                                </div>
+                                <div class="c-info"><h3>Alimentos para Animales</h3></div>
                             </a>
                         </div>
                     </div>
@@ -84,6 +75,7 @@
 
                     <div class="carousel-container product-carousel-all" data-aos="fade-up">
                         <button class="carousel-btn prev-btn"><i class="las la-angle-left"></i></button>
+
                         <div class="carousel-track">
                             @if($productos->isNotEmpty())
                                 {{-- Muestra solo 10 --}}
@@ -104,8 +96,17 @@
                                             </div>
 
                                             <div class="product-actions">
-                                                <a href="{{ route('productos.show', $producto->id_producto) }}" class="btn-ver-mas">Ver Detalles</a>
-                                                <button class="btn-comprar">Agregar al Carrito</button>
+                                                {{-- Cambiado: abre modal --}}
+                                                <button class="btn-ver-mas" onclick="mostrarDetalleProducto({{ $producto->id_producto }})">
+                                                    Ver Detalles
+                                                </button>
+
+                                                {{-- Cambiado: contactar con vendedor --}}
+                                                <a href="https://wa.me/{{ $producto->telefono_vendedor ?? '' }}?text=Hola,%20estoy%20interesado%20en%20{{ urlencode($producto->nombre_producto) }}"
+                                                   target="_blank"
+                                                   class="btn-contactar">
+                                                   Contactar con el Vendedor
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -114,6 +115,7 @@
                                 <p class="text-center">No hay productos disponibles en este momento.</p>
                             @endif
                         </div>
+
                         <button class="carousel-btn next-btn"><i class="las la-angle-right"></i></button>
                     </div>
                 </div>
@@ -159,8 +161,14 @@
                                                     </div>
 
                                                     <div class="product-actions">
-                                                        <a href="{{ route('productos.show', $producto->id_producto) }}" class="btn-ver-mas">Ver Detalles</a>
-                                                        <button class="btn-comprar">Agregar al Carrito</button>
+                                                        <button class="btn-ver-mas" onclick="mostrarDetalleProducto({{ $producto->id_producto }})">
+                                                            Ver Detalles
+                                                        </button>
+                                                        <a href="https://wa.me/{{ $producto->telefono_vendedor ?? '' }}?text=Hola,%20estoy%20interesado%20en%20{{ urlencode($producto->nombre_producto) }}"
+                                                           target="_blank"
+                                                           class="btn-contactar">
+                                                           Contactar con el Vendedor
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -188,7 +196,7 @@
 {{-- Modal detalle producto --}}
 <div id="productDetailModal" class="modal">
     <div class="modal-content">
-        <span class="close-button">&times;</span> 
+        <span class="close-button">&times;</span>
         <div id="modal-body-content">
             <div class="product-detail-loading">Cargando detalles del producto...</div>
         </div>
@@ -196,5 +204,4 @@
 </div>
 
 @include('layouts.mensajesModal')
-
 @endsection
