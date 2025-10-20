@@ -6,13 +6,31 @@
 </div>
 
 <div class="chatbot-floating-container" id="chatbot-floating-container">
-    {{-- ... Contenido del Chatbot ... --}}
+    <div class="chatbot-header">
+        <span>Asistente Virtual</span>
+        <button class="close-chatbot" id="close-chatbot">✖</button>
+    </div>
+    <div class="chatbot-body" id="chatbot-body">
+        <!-- <div class="message bot-message">
+             ¡Hola! 👋, soy Claudia, tu asistente virtual.
+        </div> -->
+    </div>
+    <div class="chatbot-options" id="chatbot-options">
+    </div>
 </div>
 
 <footer class="bg-gray-800 text-white py-4 mt-6">
     <div class="container">
         <div class="foo-row">
-            {{-- ... Contenido del Footer ... --}}
+            <div class="foo-col">
+                <h2>Regístrate <br>a nuestra página</h2>
+                <form action="" method="GET">
+                    <div class="f-input">
+                        <input type="text" placeholder="Ingrese su correo">
+                        <button type="submit" class="hm-btn-round btn-primary"><i class="far fa-paper-plane"></i></button>
+                    </div>
+                </form>
+            </div>
             <div class="foo-col">
                 <ul>
                     {{-- Rutas actualizadas con url() --}}
