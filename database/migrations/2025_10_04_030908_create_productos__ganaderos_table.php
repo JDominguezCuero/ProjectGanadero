@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productos__ganaderos', function (Blueprint $table) {
+        Schema::create('productos_ganaderos', function (Blueprint $table) {
             $table->id('id_producto'); // PRIMARY KEY AUTO_INCREMENT
             $table->string('nombre_producto', 255);
             $table->text('descripcion_producto')->nullable();
@@ -28,8 +28,7 @@ return new class extends Migration
             $table->string('imagen_url', 255)->nullable();
             $table->decimal('precio_anterior', 10, 2)->nullable();
             $table->decimal('precio_unitario', 10, 2);
-            
-            
+                        
             $table->foreign('categoria_id')->references('id_categoria')->on('categorias_producto')->onDelete('set null');
             $table->foreign('id_usuario')->references('id')->on('usuarios')->onDelete('set null');
         });

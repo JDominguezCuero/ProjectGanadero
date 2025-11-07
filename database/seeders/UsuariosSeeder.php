@@ -87,7 +87,7 @@ class UsuariosSeeder extends Seeder
                 'telefono_usuario' => null,
                 'token_expiracion' => null,
                 'token_recuperacion' => null,
-            ],
+            ]
         ]);
         
     }
