@@ -1,11 +1,45 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
 
 Route::get('/prueba', function () {
     return ('¡Prueba Exitosa! Actividad de Git completada - Proyecto ProjectGanadero');
 });
+
+Route::get('/productos', function () { 
+    return view('productos'); 
+})->name('productos');
+
+Route::get('/campanas', function () { 
+    return view('campanas'); 
+})->name('campanas');
+
+Route::get('/nosotros', function () { 
+    return view('nosotros'); 
+})->name('nosotros');
+
+Route::get('/contacto', function () { 
+    return view('contacto'); 
+})->name('contacto');
+
+Route::get('/ListaProductos', function () { 
+    return view('productos_lista'); 
+})->name('productos.index');
+
+Route::get('/autenticacion', function () { 
+    return view('autenticacion'); 
+})->name('auth.autenticacion');
+
+
+Route::get('/perfil', [UsuariosController::class, 'index'])->name('perfil.index');
+Route::post('/perfil/actualizar', [UsuariosController::class, 'actualizar'])->name('perfil.actualizar');
+
+
+Route::get('/notificaciones/listar', [NotificacionController::class, 'listar'])->name('notificaciones.listar');
+Route::post('/notificaciones/eliminar', [NotificacionController::class, 'eliminar'])->name('notificaciones.eliminar');
+Route::post('/notificaciones/insertar', [NotificacionController::class, 'insertar'])->name('notificaciones.insertar');
