@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductosListaController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
@@ -43,3 +44,7 @@ Route::post('/perfil/actualizar', [UsuariosController::class, 'actualizar'])->na
 Route::get('/notificaciones/listar', [NotificacionController::class, 'listar'])->name('notificaciones.listar');
 Route::post('/notificaciones/eliminar', [NotificacionController::class, 'eliminar'])->name('notificaciones.eliminar');
 Route::post('/notificaciones/insertar', [NotificacionController::class, 'insertar'])->name('notificaciones.insertar');
+
+
+Route::get('/productoss', [ProductosListaController::class, 'index'])->name('productoss.index');
+Route::get('/productoss/detalle/{id}', [ProductosListaController::class, 'detalle'])->name('productoss.detalle');
