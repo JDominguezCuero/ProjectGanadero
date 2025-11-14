@@ -31,4 +31,10 @@ class ProductoGanadero extends Model
     {
         return $this->belongsTo(CategoriaProducto::class, 'categoria_id', 'id_categoria');
     }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuarios::class, 'id_usuario', 'id_usuario');
+    }
+
 }

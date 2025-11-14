@@ -34,4 +34,10 @@ class Usuarios extends Model
         return $this->belongsTo(Rol::class, 'id_rol', 'id_rol');
     }
 
+    public function productos()
+    {
+        return $this->hasMany(ProductoGanadero::class, 'id_usuario', 'id_usuario');
+    }
+
+
 }
