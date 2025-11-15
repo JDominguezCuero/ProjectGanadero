@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('css/detalleProducto.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
 </head>
-<body class="min-h-screen flex bg-gray-100">
+<body class="min-h-screen flex bg-gray-100 contenedorBody">
     @yield('content')
 
     {{-- Scripts globales --}}
@@ -31,9 +31,11 @@
     <script src="{{ asset('js/tienda_online.js') }}"></script>
     <script src="{{ asset('js/product_modal.js') }}"></script>
     <script src="{{ asset('js/notificaciones.js') }}"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
 
-    <script src="https://www.powr.io/powr.js?platform=html"></script>
+    <!-- <script src="https://www.powr.io/powr.js?platform=html"></script> -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>        
         AOS.init({
             duration: 1200,

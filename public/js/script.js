@@ -37,12 +37,12 @@ function iniciarSesion() {
         formulario_register.style.display = "none";
         caja_trasera_register.style.opacity = "1";
         caja_trasera_login.style.opacity = "0";
-        document.body.style.backgroundImage = "url('../../../public/images/img1Login.png')";
+        document.body.style.backgroundImage = "url('../images/img1Login.png')";
         document.body.style.backgroundSize = "cover"; // Para que la imagen cubra toda la pantalla
         document.body.style.backgroundRepeat = "no-repeat"; // Para que no se repita
         document.body.style.backgroundPosition = "center"; // Centrada
     } else {
-        document.body.style.backgroundImage = "url('../../../public/images/img1Login.png')";
+        document.body.style.backgroundImage = "url('../images/img1Login.png')";
         formulario_login.style.display = "block";
         contenedor_login_register.style.left = "0px";
         formulario_register.style.display = "none";
@@ -58,12 +58,12 @@ function register() {
         formulario_login.style.display = "none";
         caja_trasera_register.style.opacity = "0";
         caja_trasera_login.style.opacity = "1";
-        document.body.style.backgroundImage = "url('../../../public/images/img1_Registro.jpg')";
+        document.body.style.backgroundImage = "url('../images/img1_Registro.jpg')";
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundRepeat = "no-repeat";
         document.body.style.backgroundPosition = "center";
     } else {
-        document.body.style.backgroundImage = "url('../../../public/images/img1_Registro.jpg')";
+        document.body.style.backgroundImage = "url('../images/img1_Registro.jpg')";
         formulario_register.style.display = "block";
         contenedor_login_register.style.left = "0px";
         formulario_login.style.display = "none";

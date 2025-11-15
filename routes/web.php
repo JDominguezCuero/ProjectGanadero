@@ -33,8 +33,10 @@ Route::get('/contacto', function () {
 // })->name('productos.index');
 
 Route::get('/autenticacion', function () { 
-    return view('autenticacion'); 
-})->name('auth.autenticacion');
+    return view('usuarios.autenticacion'); 
+})->name('autenticacion');
+
+
 
 
 Route::get('/perfil', [UsuariosController::class, 'index'])->name('perfil.index');
@@ -48,3 +50,4 @@ Route::post('/perfil/actualizar', [UsuariosController::class, 'actualizar'])->na
 
 Route::get('/productos', [ProductosListaController::class, 'index'])->name('productos');
 Route::get('/productos/detalle/{id}', [ProductosListaController::class, 'detalle'])->name('productos.detalle');
+Route::match(['get','post'],'/auth/login', [UsuariosController::class, 'login'])->name('auth.login');

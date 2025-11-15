@@ -29,7 +29,7 @@
                     <li><a href="{{ route('nosotros') }}">Nosotros</a></li>
                     <li><a href="{{ route('contacto') }}">Contacto</a></li>
                     @if (!$isUserLoggedIn)
-                        <li><a href="{{ route('auth.autenticacion') }}">Ingresar</a></li>
+                        <li><a href="{{ route('autenticacion') }}">Ingresar</a></li>
                     @endif
                 </ul>
 
@@ -98,7 +98,7 @@
         <li><a href="{{ route('nosotros') }}">Nosotros</a></li>
         <li><a href="{{ route('contacto') }}">Contacto</a></li>
         @if (!$isUserLoggedIn)
-            <li><a href="{{ route('auth.autenticacion') }}">Ingresar</a></li>
+            <li><a href="{{ route('autenticacion') }}">Ingresar</a></li>
         @endif
     </ul>
 </div>
