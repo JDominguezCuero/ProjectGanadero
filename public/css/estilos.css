@@ -7,11 +7,14 @@
 }
 
 .contenedorBody {
-    background-image: url(../images/img1Login.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
+}
+
+.imagesFondo {
+    background-image: url(../images/img1Login.png);
 }
 
 main {

@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('css/detalleProducto.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
 </head>
-<body class="min-h-screen flex bg-gray-100 contenedorBody">
+<body class="min-h-screen flex bg-gray-100 contenedorBody @yield('body_class')">
     @yield('content')
 
     {{-- Scripts globales --}}

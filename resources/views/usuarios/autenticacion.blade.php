@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('body_class', 'imagesFondo')
+
 @section('title', 'Login y Register - Jose Domínguez Cuero')
 
 @section('content')
@@ -62,7 +64,6 @@
 @endif
 
 
-<div class="contenedorBody">
     <main>
         <div class="contenedor__todo">
 
@@ -94,7 +95,7 @@
 
                     <div class="login-options">
                         <br>
-                        <a href="{{ url('public/index_controller.php') }}" style="color: green;" class="btn-small">Volver</a>
+                        <a href="{{ route('home.index') }}" style="color: green;" class="btn-small">Volver</a>
                         <br>
                         <a href="#" data-toggle="modal" data-target="#modalRestablecer" style="color: green;" class="forgot-password">
                             ¿Olvidaste tu contraseña?
@@ -117,7 +118,7 @@
 
                     <div class="login-options">
                         <br>
-                        <a href="{{ url('public/index_controller.php') }}" style="color: green;" class="btn-small">Volver</a>
+                        <a href="{{ route('home.index') }}" style="color: green;" class="btn-small">Volver</a>
                     </div>
                 </form>
 
@@ -176,7 +177,6 @@
         </div>
 
     </main>
-</div>
 
 
 
