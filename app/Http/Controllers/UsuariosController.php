@@ -49,7 +49,7 @@ class UsuariosController extends Controller
                             'url_Usuario' => $usuario->imagen_url_Usuario,
                         ]);
 
-                        return redirect()->route('home');
+                        return redirect()->route('home.index');
                     } else {
                         $mensjError = "El usuario no se encuentra activo, por favor contactese con el administrador";
                         throw new \Exception($mensjError);
@@ -59,7 +59,7 @@ class UsuariosController extends Controller
                     throw new \Exception($mensjError);
                 }
             } catch (\Exception $e) {
-                return redirect()->route('auth.login')->with([
+                return redirect()->route('autenticacion')->with([
                     'login' => 1,
                     'error' => $mensjError
                 ]);
