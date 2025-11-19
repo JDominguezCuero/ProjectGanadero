@@ -50,7 +50,7 @@
             <span id="textNotificacion" class="{{ $textHiddenClass }}">Notificaciones</span>
         </a>
 
-        <a href="{{ url('productos/listar') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+        <a href="{{ route('productos.manage') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
             <i data-lucide="store"></i>
             <span id="textProducto" class="{{ $textHiddenClass }}">Productos</span>
         </a>

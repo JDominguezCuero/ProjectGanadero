@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CategoriaProducto;
+use App\Models\Usuarios;
 
 class ProductoGanadero extends Model
 {
     use HasFactory;
 
-    protected $table = 'productosganaderos'; 
+    protected $table = 'productosganaderos';
     protected $primaryKey = 'id_producto';
-    public $timestamps = false; // si tu tabla no tiene created_at / updated_at
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre_producto',
@@ -26,7 +28,6 @@ class ProductoGanadero extends Model
         'precio_unitario',
     ];
 
-    // Relación con la categoría
     public function categoria()
     {
         return $this->belongsTo(CategoriaProducto::class, 'categoria_id', 'id_categoria');
@@ -36,5 +37,4 @@ class ProductoGanadero extends Model
     {
         return $this->belongsTo(Usuarios::class, 'id_usuario', 'id_usuario');
     }
-
 }

@@ -9,7 +9,7 @@
         {{-- Header de la sección --}}
         <header class="text-center mb-10">
             <div>
-                <img src="{{ asset('assets/images/contacto1.png') }}" alt="Ganadería" class="imagen-contacto mx-auto">
+                <img src="{{ asset('images/contacto1.png') }}" alt="Ganadería" class="imagen-contacto mx-auto">
             </div>
             
             <div class="header-content mt-6">

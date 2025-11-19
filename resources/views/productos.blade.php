@@ -30,7 +30,7 @@
                             <h2>Filtros</h2>
 
                             {{-- Formulario de filtros --}}
-                            <form action="{{ route('productos') }}" method="GET"> 
+                            <form action="{{ route('productos.index') }}" method="GET"> 
                                 <div class="filter-group">
                                     <label for="categoria">Categoría:</label>
                                     <select name="categoria" id="categoria" onchange="this.form.submit()">

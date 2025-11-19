@@ -24,7 +24,7 @@
             <nav class="hm-menu">
                 <ul>
                     <li><a href="{{ route('home.index') }}">Productos</a></li>
-                    <li><a href="{{ route('productos') }}">Catálogo de Productos</a></li>
+                    <li><a href="{{ route('productos.index') }}">Catálogo de Productos</a></li>
                     <li><a href="{{ route('campanas') }}">Campañas</a></li>
                     <li><a href="{{ route('nosotros') }}">Nosotros</a></li>
                     <li><a href="{{ route('contacto') }}">Contacto</a></li>
@@ -93,7 +93,7 @@
     <button class="cerrar-menu"><i class="fas fa-times"></i></button>
     <ul>
         <li><a href="{{ route('home.index') }}">Productos</a></li>
-        <li><a href="{{ route('productos') }}">Catálogo de Productos</a></li>
+        <li><a href="{{ route('productos.index') }}">Catálogo de Productos</a></li>
         <li><a href="{{ route('campanas') }}">Campañas</a></li>
         <li><a href="{{ route('nosotros') }}">Nosotros</a></li>
         <li><a href="{{ route('contacto') }}">Contacto</a></li>
