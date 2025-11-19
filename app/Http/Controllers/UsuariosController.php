@@ -30,43 +30,73 @@ class UsuariosController extends Controller
     {
         if ($request->isMethod('post')) {
             try {
-                $correo = $request->input('correoElectronicoLogin', '');
-                $contrasena = $request->input('contrasenaLogin', '');
-                $mensjError = '';
+                // Validación básica
+                $request->validate([
+                    'correoElectronicoLogin' => 'required|email',
+                    'contrasenaLogin' => 'required|string',
+                ]);
 
-                $usuario = Usuarios::where('correo_usuario', $correo)->first();
+                $correo = trim($request->input('correoElectronicoLogin'));
+                $contrasena = $request->input('contrasenaLogin');
 
-                if ($usuario && Hash::check($contrasena, $usuario->contrasena_usuario)) {
-                    if ($usuario->estado === 'Activo') {
-                        Auth::loginUsingId($usuario->id_usuario);
+                // Intentar autenticación. IMPORTANTE: en config/auth.php el provider 'users'
+                // debe apuntar a App\Models\Usuarios::class (lo hiciste).
+                $credentials = [
+                    'correo_usuario' => $correo,
+                    'password' => $contrasena, // Auth::attempt usa 'password' por convención
+                ];
 
-                        session([
-                            'usuario' => $usuario->nombre_usuario,
-                            'nombre' => $usuario->nombreCompleto,
-                            'id_usuario' => $usuario->id_usuario,
-                            'correo_usuario' => $usuario->correo_usuario,
-                            'rol' => $usuario->id_rol,
-                            'url_Usuario' => $usuario->imagen_url_Usuario,
+                if (Auth::attempt($credentials, $request->filled('remember'))) {
+                    $usuario = Auth::user();
+
+                    // Verificar estado
+                    if ($usuario->estado !== 'Activo') {
+                        Auth::logout();
+                        return redirect()->route('autenticacion')->with([
+                            'login' => 1,
+                            'error' => 'El usuario no se encuentra activo, por favor contactese con el administrador'
                         ]);
-
-                        return redirect()->route('home.index');
-                    } else {
-                        $mensjError = "El usuario no se encuentra activo, por favor contactese con el administrador";
-                        throw new \Exception($mensjError);
                     }
-                } else {
-                    $mensjError = "Usuario o contraseña incorrecta";
-                    throw new \Exception($mensjError);
+
+                    // Regenerar sesión por seguridad
+                    $request->session()->regenerate();
+
+                    // Guardar datos que necesites en sesión
+                    session([
+                        'usuario' => $usuario->nombre_usuario,
+                        'nombre' => $usuario->nombreCompleto,
+                        'id_usuario' => $usuario->id_usuario,
+                        'correo_usuario' => $usuario->correo_usuario,
+                        'rol' => $usuario->id_rol,
+                        'url_Usuario' => $usuario->imagen_url_Usuario,
+                    ]);
+
+                    return redirect()->route('home.index');
                 }
-            } catch (\Exception $e) {
+
+                // Credenciales inválidas
                 return redirect()->route('autenticacion')->with([
                     'login' => 1,
-                    'error' => $mensjError
+                    'error' => 'Usuario o contraseña incorrecta'
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $ve) {
+                // Errores de validación -> regresar con mensaje
+                $msg = implode(' ', $ve->errors()->flatten()->toArray());
+                return redirect()->route('autenticacion')->with([
+                    'login' => 1,
+                    'error' => $msg
+                ])->withInput();
+            } catch (\Exception $e) {
+                \Log::error('Error login: ' . $e->getMessage());
+                return redirect()->route('autenticacion')->with([
+                    'login' => 1,
+                    'error' => 'Error en el proceso de login. Intente de nuevo.'
                 ]);
             }
-        } else {
-            return view('usuarios.autenticacion');
         }
+
+        // GET -> vista de autenticación
+        return view('usuarios.autenticacion');
     }
 
     // REGISTRO

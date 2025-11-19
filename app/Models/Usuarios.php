@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Usuarios extends Model
+class Usuarios extends Authenticatable
 {
+    use Notifiable;
+
     protected $table = 'usuarios';
     protected $primaryKey = 'id_usuario';
-    public $timestamps = false; // Tu tabla no usa created_at/updated_at
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = false; // cambiar a true si tienes created_at/updated_at
 
     protected $fillable = [
         'nombreCompleto',
@@ -26,9 +31,30 @@ class Usuarios extends Model
         'fecha_ultimo_acceso',
     ];
 
+    protected $hidden = [
+        'contrasena_usuario',
+        'token_recuperacion',
+    ];
+
     /**
-     * Relación: un usuario pertenece a un rol
+     * Laravel usará este método para leer el hash de la contraseña.
      */
+    public function getAuthPassword()
+    {
+        return $this->contrasena_usuario;
+    }
+
+    /**
+     * Si Laravel internamente hace $user->password = '...', redirigimos esa
+     * asignación a la columna 'contrasena_usuario' para evitar que intente escribir
+     * en una columna 'password' inexistente.
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['contrasena_usuario'] = $value;
+    }
+
+    // Relaciones
     public function rol()
     {
         return $this->belongsTo(Rol::class, 'id_rol', 'id_rol');
@@ -38,6 +64,4 @@ class Usuarios extends Model
     {
         return $this->hasMany(ProductoGanadero::class, 'id_usuario', 'id_usuario');
     }
-
-
 }

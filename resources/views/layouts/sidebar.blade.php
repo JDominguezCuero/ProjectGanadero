@@ -40,7 +40,7 @@
     </div>
 
     <nav class="mt-10 space-y-4">
-        <a href="{{ url('index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+        <a href="{{ route('home.index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
             <i data-lucide="home"></i>
             <span id="textInicio" class="{{ $textHiddenClass }}">Inicio</span>
         </a>
