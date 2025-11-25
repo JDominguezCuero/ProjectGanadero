@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductosListaController;
+use App\Http\Controllers\InventarioAlimentosController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -67,3 +69,10 @@ Route::middleware('auth')->group(function () {
     // Eliminar producto
     Route::delete('/productos/{id}', [ProductosListaController::class, 'destroy'])->name('productos.destroy');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Inventario_Alimento - gestión (protegido)
+|--------------------------------------------------------------------------
+*/
+Route::resource('inventario', InventarioAlimentosController::class);

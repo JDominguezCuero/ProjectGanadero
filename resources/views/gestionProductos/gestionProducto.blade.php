@@ -96,18 +96,17 @@
                                         style="width:16px; height:16px;"
                                         data-toggle="modal"
                                         data-target="#modalEditarProducto"
-                                        data-product="{{ htmlspecialchars(json_encode([
-                                            'id' => $item->id_producto,
-                                            'nombre' => $item->nombre_producto,
-                                            'descripcion' => $item->descripcion_producto,
-                                            'precio' => $item->precio_unitario,
-                                            'stock' => $item->cantidad,
-                                            'imagen_url' => $item->imagen_url,
-                                            'categoria_id' => $item->categoria_id,
-                                            'estado_oferta' => $item->estado_oferta,
-                                            'precio_anterior' => $item->precio_anterior
-                                        ]), ENT_QUOTES, 'UTF-8') }}"
+                                        data-id="{{ $item->id_producto }}"
+                                        data-nombre="{{ e($item->nombre_producto) }}"
+                                        data-descripcion="{{ e($item->descripcion_producto) }}"
+                                        data-precio="{{ $item->precio_unitario }}"
+                                        data-stock="{{ $item->cantidad }}"
+                                        data-imagen_url="{{ e($item->imagen_url) }}"
+                                        data-categoria_id="{{ $item->categoria_id }}"
+                                        data-estado_oferta="{{ $item->estado_oferta }}"
+                                        data-precio_anterior="{{ $item->precio_anterior ?? '' }}"
                                     ></i>
+
 
 
 
@@ -150,29 +149,32 @@
 @include('gestionProductos.partials.registrar_producto')
 @include('gestionProductos.partials.editar_producto')
 
-@endsection
 
-@push('scripts')
 <script src="https://unpkg.com/lucide@latest"></script>
 <script> lucide.createIcons(); </script>
 
 <script>
 $(document).ready(function() {
 
+    // Delegación por si el icono se genera dinámicamente
     $(document).on('click', '[data-toggle="modal"][data-target="#modalEditarProducto"]', function() {
 
-        const dataStr = $(this).attr('data-product');
-        if (!dataStr) return;
+        const $el = $(this);
 
-        let product;
-        try {
-            product = JSON.parse(dataStr);
-        } catch (err) {
-            console.error('Error parseando data-product:', err, dataStr);
-            return;
-        }
+        // Leer cada atributo data-*
+        const product = {
+            id: $el.data('id'),
+            nombre: $el.data('nombre') ?? '',
+            descripcion: $el.data('descripcion') ?? '',
+            precio: $el.data('precio') ?? '',
+            stock: $el.data('stock') ?? '',
+            imagen_url: $el.data('imagen_url') ?? '',
+            categoria_id: $el.data('categoria_id') ?? '',
+            estado_oferta: $el.data('estado_oferta'),
+            precio_anterior: $el.data('precio_anterior') ?? ''
+        };
 
-        // Rellenar campos del modal
+        // Rellenar campos del modal (asegúrate que los ids existen en el modal)
         $('#editar_id_producto').val(product.id);
         $('#editar_nombre').val(product.nombre);
         $('#editar_descripcion').val(product.descripcion);
@@ -180,17 +182,23 @@ $(document).ready(function() {
         $('#editar_stock').val(product.stock);
         $('#editar_imagen_url_actual').val(product.imagen_url);
 
+        // Preview de imagen (si existe)
         if (product.imagen_url) {
             $('#imagen_preview_editar').attr('src', product.imagen_url).show();
         } else {
-            $('#imagen_preview_editar').hide();
+            $('#imagen_preview_editar').hide().attr('src', '');
         }
 
-        $('#editar_categoria_id').val(product.categoria_id);
-        $('#editar_estado_oferta').prop('checked', product.estado_oferta == 1);
+        // Categoria (si es un select, setear su valor)
+        $('#editar_categoria_id').val(product.categoria_id).trigger('change');
+
+        // Checkbox estado_oferta - puede venir '1' o 1 o '0'
+        const isOnOffer = (String(product.estado_oferta) === '1' || product.estado_oferta === 1);
+        $('#editar_estado_oferta').prop('checked', isOnOffer);
+
         $('#editar_precio_anterior').val(product.precio_anterior ?? '');
 
-        // Mostrar/ocultar precio anterior según checkbox
+        // Mostrar/ocultar grupo de precio anterior según checkbox
         const togglePrecioAnterior = () => {
             if ($('#editar_estado_oferta').is(':checked')) {
                 $('#editar_precio_anterior_group').show();
@@ -203,16 +211,19 @@ $(document).ready(function() {
         togglePrecioAnterior();
         $('#editar_estado_oferta').off('change').on('change', togglePrecioAnterior);
 
-        // Ajustar action del formulario
-        const updateUrl = '{{ route("productos.update", ":id") }}'.replace(':id', product.id);
+        // Ajustar action del formulario para enviar al route correct (usa :id placeholder)
+        // Asegúrate que en rutas existe productos.update
+        const updateUrlTemplate = '{{ route("productos.update", ":id") }}';
+        const updateUrl = updateUrlTemplate.replace(':id', product.id);
         $('#formEditarProducto').attr('action', updateUrl);
 
-        // Abrir modal
+        // Abrir modal (si usas bootstrap)
         $('#modalEditarProducto').modal('show');
     });
 
 });
 </script>
+
 
 
 
@@ -262,5 +273,5 @@ $(document).ready(function() {
 </script>
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-@endpush
 
+@endsection
