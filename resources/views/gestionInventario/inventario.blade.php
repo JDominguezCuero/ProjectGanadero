@@ -75,10 +75,13 @@
                                         data-fecha_ingreso="{{ $item->fecha_ingreso }}">
                                     </i>
 
-                                    <a href="{{ route('inventario.destroy' , $item->id_alimento) }}"
-                                        onclick="return confirm('¿Estás seguro que deseas eliminar este alimento del inventario?');">
-                                        <i data-lucide="trash-2" class="text-red-600 hover:text-red-800 cursor-pointer w-4 h-4"></i>
-                                    </a>
+                                    <form action="{{ route('inventario.destroy', $item->id_alimento) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este alimento del inventario?');">
+                                            <i data-lucide="trash-2" class="text-red-600 hover:text-red-800 cursor-pointer w-4 h-4"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
