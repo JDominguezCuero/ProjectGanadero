@@ -19,7 +19,9 @@ class InventarioAlimentosController extends Controller
 
             return view('gestionInventario.inventario', compact('inventario', 'msg', 'error'));
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Error al cargar el inventario.']);
+            return redirect()
+                ->route('inventario.index')
+                ->with('error', 'Error al cargar el inventario: ' . $e->getMessage());
         }
     }
 
@@ -53,12 +55,19 @@ class InventarioAlimentosController extends Controller
 
             return redirect()
                 ->route('inventario.index')
-                ->with('msg', 'Alimento agregado correctamente.');
+                ->with('success', '✅ Alimento agregado correctamente al inventario.');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()
+                ->route('inventario.index')
+                ->withErrors($e->errors())
+                ->withInput()
+                ->with('error', '❌ Error de validación en el formulario.');
+                
         } catch (\Exception $e) {
             return redirect()
                 ->route('inventario.index')
-                ->withErrors(['error' => 'Error al agregar el alimento.']);
+                ->with('error', '❌ Error al agregar el alimento: ' . $e->getMessage());
         }
     }
 
@@ -73,14 +82,14 @@ class InventarioAlimentosController extends Controller
             if (!$item) {
                 return redirect()
                     ->route('inventario.index')
-                    ->withErrors(['error' => 'Alimento no encontrado.']);
+                    ->with('error', '❌ Alimento no encontrado en el inventario.');
             }
 
             return view('inventario.show', compact('item'));
         } catch (\Exception $e) {
             return redirect()
                 ->route('inventario.index')
-                ->withErrors(['error' => 'Error al consultar los datos.']);
+                ->with('error', '❌ Error al consultar los datos del alimento.');
         }
     }
 
@@ -88,26 +97,24 @@ class InventarioAlimentosController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-        {
-            try {
-                $item = InventarioAlimentos::find($id);
+    {
+        try {
+            $item = InventarioAlimentos::find($id);
 
-                if (!$item) {
-                    return redirect()
-                        ->route('inventario.index')
-                        ->withErrors(['error' => 'Alimento no encontrado para editar.']);
-                }
-
-                // Vista correcta
-                return view('inventario.edit', compact('item'));
-
-            } catch (\Exception $e) {
+            if (!$item) {
                 return redirect()
                     ->route('inventario.index')
-                    ->withErrors(['error' => 'Error al cargar el formulario de edición.']);
+                    ->with('error', '❌ Alimento no encontrado para editar.');
             }
-        }
 
+            return view('inventario.edit', compact('item'));
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('inventario.index')
+                ->with('error', '❌ Error al cargar el formulario de edición.');
+        }
+    }
 
     /**
      * Update the specified resource in storage.
@@ -127,7 +134,7 @@ class InventarioAlimentosController extends Controller
             if (!$item) {
                 return redirect()
                     ->route('inventario.index')
-                    ->withErrors(['error' => 'Alimento no encontrado para actualizar.']);
+                    ->with('error', '❌ Alimento no encontrado para actualizar.');
             }
 
             $item->update([
@@ -139,12 +146,19 @@ class InventarioAlimentosController extends Controller
 
             return redirect()
                 ->route('inventario.index')
-                ->with('msg', 'Alimento actualizado correctamente.');
+                ->with('success', '✅ Alimento actualizado correctamente.');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()
+                ->route('inventario.index')
+                ->withErrors($e->errors())
+                ->withInput()
+                ->with('error', '❌ Error de validación en el formulario.');
+                
         } catch (\Exception $e) {
             return redirect()
                 ->route('inventario.index')
-                ->withErrors(['error' => 'Error al actualizar el alimento.']);
+                ->with('error', '❌ Error al actualizar el alimento: ' . $e->getMessage());
         }
     }
 
@@ -159,19 +173,20 @@ class InventarioAlimentosController extends Controller
             if (!$item) {
                 return redirect()
                     ->route('inventario.index')
-                    ->withErrors(['error' => 'ID de alimento no encontrado para eliminar.']);
+                    ->with('error', '❌ Alimento no encontrado para eliminar.');
             }
 
+            $nombreAlimento = $item->nombre;
             $item->delete();
 
             return redirect()
                 ->route('inventario.index')
-                ->with('msg', 'Alimento eliminado correctamente.');
+                ->with('success', "✅ Alimento '$nombreAlimento' eliminado correctamente.");
+
         } catch (\Exception $e) {
             return redirect()
                 ->route('inventario.index')
-                ->withErrors(['error' => 'Error al eliminar el alimento.']);
+                ->with('error', '❌ Error al eliminar el alimento: ' . $e->getMessage());
         }
     }
 }
-

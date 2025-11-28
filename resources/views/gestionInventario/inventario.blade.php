@@ -2,24 +2,33 @@
 @extends('layouts.app')
 
 @section('content')
-<?php
-// Manejo de mensajes enviados por el controlador
-if (request('inv') == 1 && request('error')) {
-    $mensaje = json_encode(request('error'));
-    echo "<script>
+
+
+{{-- Manejo de mensajes enviados por el controlador --}}
+@if(session('success'))
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            showModal('❌ Error', $mensaje, 'error');
+            showModal('Operación Exitosa', @json(session('success')), 'success');
         });
-    </script>";
-} elseif (request('msg')) {
-    $mensajeExitoso = json_encode(request('msg'));
-    echo "<script>
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            showModal('✅ Operación Exitosa', $mensajeExitoso, 'success');
+            showModal('Error', @json(session('error')), 'error');
         });
-    </script>";
-}
-?>
+    </script>
+@endif
+
+@if($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let errores = @json($errors->all());
+            showModal('Errores de Validación', errores.join('<br>'), 'error');
+        });
+    </script>
+@endif
 
 <div class="flex min-h-screen w-full">
     @if(session('usuario'))
@@ -59,7 +68,6 @@ if (request('inv') == 1 && request('error')) {
                             <td class="py-3 px-6 text-center align-middle">
                                 <div class="flex justify-center items-center gap-2">
                                     <i data-lucide="square-pen" class="text-blue-600 hover:text-blue-800 cursor-pointer w-4 h-4"
-                                        data-toggle="modal" data-target="#modalEditarAlimento"
                                         data-id="{{ $item->id_alimento }}"
                                         data-nombre="{{ $item->nombre }}"
                                         data-cantidad="{{ $item->cantidad }}"
@@ -67,7 +75,7 @@ if (request('inv') == 1 && request('error')) {
                                         data-fecha_ingreso="{{ $item->fecha_ingreso }}">
                                     </i>
 
-                                    <a href="{{ url('inventario/eliminar/' . $item->id_alimento) }}"
+                                    <a href="{{ route('inventario.destroy' , $item->id_alimento) }}"
                                         onclick="return confirm('¿Estás seguro que deseas eliminar este alimento del inventario?');">
                                         <i data-lucide="trash-2" class="text-red-600 hover:text-red-800 cursor-pointer w-4 h-4"></i>
                                     </a>
@@ -96,43 +104,43 @@ if (request('inv') == 1 && request('error')) {
 @include('layouts.mensajesModal')
 
 <script>
-    lucide.createIcons();
-
-    $(document).ready(function () {
-        $('#modalEditarAlimento').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            $('#editar_id_alimento').val(button.data('id'));
-            $('#editar_nombre').val(button.data('nombre'));
-            $('#editar_cantidad').val(button.data('cantidad'));
-            $('#editar_unidadMedida').val(button.data('unidad_medida'));
-            $('#editar_fechaIngreso').val(button.data('fecha_ingreso'));
-        });
-
-        if(window.location.search.includes("msg=") || window.location.search.includes("error=")) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    });
-
-    function myFunction() {
-        var input = document.getElementById("myInput");
-        var filter = input.value.toUpperCase();
-        var table = document.getElementById("myTable");
-        var tr = table.getElementsByTagName("tr");
-
-        for (var i = 1; i < tr.length; i++) {
-            var tds = tr[i].getElementsByTagName("td");
-            var rowContainsFilter = false;
-
-            for (var j = 0; j < tds.length - 1; j++) {
-                if (tds[j].innerText.toUpperCase().indexOf(filter) > -1) {
-                    rowContainsFilter = true;
-                    break;
-                }
-            }
-            tr[i].style.display = rowContainsFilter ? "" : "none";
-        }
+// Solo un método para evitar conflictos
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar Lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
     }
+
+    // Eventos para edición
+    document.querySelectorAll('[data-lucide="square-pen"]').forEach(icon => {
+        icon.addEventListener('click', function() {
+            let id = this.getAttribute('data-id');
+            let nombre = this.getAttribute('data-nombre');
+            let cantidad = this.getAttribute('data-cantidad');
+            let unidad = this.getAttribute('data-unidad_medida');
+            let fecha = this.getAttribute('data-fecha_ingreso');
+
+            console.log('Datos capturados:', { id, nombre, cantidad, unidad, fecha });
+
+            // Llenar los campos del modal
+            document.getElementById('editar_id_alimento').value = id || '';
+            document.getElementById('editar_nombre').value = nombre || '';
+            document.getElementById('editar_cantidad').value = cantidad || '';
+            document.getElementById('editar_unidadMedida').value = unidad || '';
+            document.getElementById('editar_fechaIngreso').value = fecha || '';
+
+            // Actualizar acción del formulario
+            if (id) {
+                document.getElementById('formEditarAlimento').action = `/inventario/${id}`;
+            }
+
+            // Mostrar modal usando Bootstrap
+            $('#modalEditarAlimento').modal('show');
+        });
+    });
+});
 </script>
+
 
 <script>
 function exportarTablaAExcel() {
