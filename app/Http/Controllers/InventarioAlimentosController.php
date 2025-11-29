@@ -92,7 +92,8 @@ class InventarioAlimentosController extends Controller
                     ->with('error', '❌ Alimento no encontrado en el inventario.');
             }
 
-            return view('inventario.show', compact('item'));
+            return view('inventario.index', compact('item'));
+
         } catch (\Exception $e) {
             return redirect()
                 ->route('inventario.index')
