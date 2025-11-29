@@ -14,8 +14,13 @@ return new class extends Migration
         Schema::create('stockalimentos', function (Blueprint $table) {
             $table->id('id_stock');
             $table->unsignedBigInteger('cantidad_utilizada');
-            $table->dateTime('fecha')->useCurrent();
-            $table->unsignedBigInteger('id_alimento');
+            $table->timestamp('fecha')->useCurrent();
+
+            // $table->unsignedBigInteger('id_alimento');
+            $table->foreignId('id_alimento')
+            ->constrained('inventarioalimentos', 'id_alimento')
+            ->onDelete('cascade');
+            
             $table->unsignedBigInteger('id_animal');
         });
     }

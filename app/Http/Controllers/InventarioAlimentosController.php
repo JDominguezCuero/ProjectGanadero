@@ -53,6 +53,13 @@ class InventarioAlimentosController extends Controller
                 'fecha_ingreso' => $request->fecha_ingreso,
             ]);
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Alimento agregado correctamente.'
+                ], 201);
+            }
+
             return redirect()
                 ->route('inventario.index')
                 ->with('success', '✅ Alimento agregado correctamente al inventario.');
@@ -175,8 +182,13 @@ class InventarioAlimentosController extends Controller
                     ->route('inventario.index')
                     ->with('error', '❌ Alimento no encontrado para eliminar.');
             }
-
+            
             $nombreAlimento = $item->nombre;
+
+            // if ($item->stockAlimentos()->exists()) {
+            //     return redirect()->back()->with('error', 'No puedes eliminar este alimento porque tiene stock asociado.');
+            // }
+
             $item->delete();
 
             return redirect()

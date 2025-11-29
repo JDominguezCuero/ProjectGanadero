@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\CategoriaProducto;
 use App\Models\Usuarios;
 
+
 class ProductoGanadero extends Model
 {
     use HasFactory;
 
-    protected $table = 'productosganaderos';
+    protected $table = 'productos_ganaderos';
     protected $primaryKey = 'id_producto';
     public $timestamps = false;
 

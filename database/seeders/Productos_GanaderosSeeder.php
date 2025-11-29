@@ -4,8 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class ProductosGanaderosSeeder extends Seeder
+class Productos_GanaderosSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,7 +14,7 @@ class ProductosGanaderosSeeder extends Seeder
     public function run(): void
     {
             
-        DB::table('productosganaderos')->insert([
+        DB::table('productos_ganaderos')->insert([
             [
                 'id_producto' => 7,
                 'nombre_producto' => 'Alimento Concentrado Premium para Cerdos',

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('permisos', function (Blueprint $table) {
-            $table->id('id_permiso '); 
+            $table->id('id_permiso'); 
             $table->string('nombre_usuario', 255)->index(); // INDEX
             $table->string('correo_usuario', 255)->index(); // INDEX
         });

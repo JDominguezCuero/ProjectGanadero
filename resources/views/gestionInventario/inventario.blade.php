@@ -75,10 +75,18 @@
                                         data-fecha_ingreso="{{ $item->fecha_ingreso }}">
                                     </i>
 
-                                    <a href="{{ route('inventario.destroy' , $item->id_alimento) }}"
+                                    <!-- <a href="{{ route('inventario.destroy' , $item->id_alimento) }}"
                                         onclick="return confirm('¿Estás seguro que deseas eliminar este alimento del inventario?');">
                                         <i data-lucide="trash-2" class="text-red-600 hover:text-red-800 cursor-pointer w-4 h-4"></i>
-                                    </a>
+                                    </a> -->
+                                    {{-- Eliminar: ruta RESTful --}}
+                                    <form action="{{ route('inventario.destroy', $item->id_alimento) }}" method="POST" style="display:inline" onsubmit="return confirm('¿Estás seguro que deseas eliminar este inventario?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-link p-0 m-0">
+                                            <i data-lucide="trash-2" class="inline-block text-red-500 hover:text-red-700 cursor-pointer" style="width:16px; height:16px;"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

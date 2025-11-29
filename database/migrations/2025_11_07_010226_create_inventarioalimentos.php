@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre', 255);
             $table->unsignedBigInteger('cantidad');
             $table->string('unidad_medida');
-            $table->dateTime('fecha_ingreso')->useCurrent();
+            $table->timestamp('fecha_ingreso')->useCurrent();
         });
 
         

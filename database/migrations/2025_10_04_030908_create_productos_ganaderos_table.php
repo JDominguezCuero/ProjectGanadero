@@ -30,7 +30,7 @@ return new class extends Migration
             $table->decimal('precio_unitario', 10, 2);
                         
             $table->foreign('categoria_id')->references('id_categoria')->on('categorias_producto')->onDelete('set null');
-            $table->foreign('id_usuario')->references('id')->on('usuarios')->onDelete('set null');
+            $table->foreign('id_usuario')->references('id_usuario')->on('usuarios')->onDelete('set null');
         });
     }
 
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('productos__ganaderos');
+        Schema::dropIfExists('productos_ganaderos');
     }
 };
