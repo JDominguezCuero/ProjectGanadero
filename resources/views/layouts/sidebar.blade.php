@@ -75,7 +75,7 @@
     </nav>
 
     <div class="mt-auto pt-4">
-        <a href="{{ url('inicio/logout') }}" class="flex items-center space-x-2 hover:bg-red-700 p-2 rounded bg-red-600" style="color:white;">
+        <a href="{{ route('auth.logout') }}" class="flex items-center space-x-2 hover:bg-red-700 p-2 rounded bg-red-600" style="color:white;">
             <i data-lucide="log-out"></i>
             <span id="textCerrarSesion" class="{{ $textHiddenClass }}">Cerrar Sesión</span>
         </a>

@@ -39,6 +39,7 @@ Route::get('/perfil', [UsuariosController::class, 'index'])->name('perfil.index'
 Route::post('/perfil/actualizar', [UsuariosController::class, 'actualizar'])->name('perfil.actualizar');
 
 Route::match(['get','post'],'/auth/login', [UsuariosController::class, 'login'])->name('auth.login');
+Route::match(['get','post'],'/auth/logout', [UsuariosController::class, 'logout'])->name('auth.logout');
 
 /*
 |--------------------------------------------------------------------------
