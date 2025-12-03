@@ -28,11 +28,11 @@
         @if($sessionUrl)
             <img src="{{ $sessionUrl }}" class="w-20 h-20 rounded-full mx-auto mb-2" alt="Avatar usuario">
         @else
-            <img src="{{ asset('images/default.png') }}" class="w-20 h-20 rounded-full mx-auto mb-2" alt="Avatar por defecto">
+            <img src="{{ asset('images/c-4.png') }}" class="w-20 h-20 rounded-full mx-auto mb-2" alt="Avatar por defecto">
         @endif
 
         <h4 class="text-lg font-semibold" style="color:white;">{{ $sessionNombre }}</h4>
-        <p class="text-sm text-gray-300">@{{ $sessionUsuario }}</p>
+        <p class="text-sm text-gray-300">{{ $sessionUsuario }}</p>
 
         <a href="{{ url('perfil/listarUsuario') }}">
             <button class="bg-green-700 mt-4 px-4 py-2 rounded hover:bg-green-800 text-white">Editar</button>
@@ -40,7 +40,7 @@
     </div>
 
     <nav class="mt-10 space-y-4">
-        <a href="{{ url('index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+        <a href="{{ route('home.index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
             <i data-lucide="home"></i>
             <span id="textInicio" class="{{ $textHiddenClass }}">Inicio</span>
         </a>
@@ -50,12 +50,12 @@
             <span id="textNotificacion" class="{{ $textHiddenClass }}">Notificaciones</span>
         </a>
 
-        <a href="{{ url('productos/listar') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+        <a href="{{ route('productos.manage') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
             <i data-lucide="store"></i>
             <span id="textProducto" class="{{ $textHiddenClass }}">Productos</span>
         </a>
 
-        <a href="{{ url('inventario/listar') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+        <a href="{{ route('inventario.index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
             <i data-lucide="box"></i>
             <span id="textInventario" class="{{ $textHiddenClass }}">Inventario</span>
         </a>
@@ -75,7 +75,7 @@
     </nav>
 
     <div class="mt-auto pt-4">
-        <a href="{{ url('inicio/logout') }}" class="flex items-center space-x-2 hover:bg-red-700 p-2 rounded bg-red-600" style="color:white;">
+        <a href="{{ route('auth.logout') }}" class="flex items-center space-x-2 hover:bg-red-700 p-2 rounded bg-red-600" style="color:white;">
             <i data-lucide="log-out"></i>
             <span id="textCerrarSesion" class="{{ $textHiddenClass }}">Cerrar Sesión</span>
         </a>
