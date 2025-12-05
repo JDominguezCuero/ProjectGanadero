@@ -2,129 +2,113 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notificacion; // Asegúrate de que esta sea la clase correcta
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Notificacion;
 
 class NotificacionesController extends Controller
 {
-    /** ----------------------------------------------
-     *  LISTAR NOTIFICACIONES (vista)
-     * ----------------------------------------------*/
+    /* ============================================================
+     * LISTAR NOTIFICACIONES (vista)
+     * ============================================================*/
     public function index()
     {
         $userId = Auth::id();
 
-        // CAMBIAR "Notification::" por "Notificacion::"
-        $notificaciones = Notificacion::where('id_usuario_receptor', $userId)
-            ->orderBy('fecha', 'desc')
-            ->get();
+        $notificaciones = Notificacion::obtenerPorUsuario($userId);
 
-        return view('notificaciones.index', compact('notificaciones'));
+        return view('notificaciones.notificaciones', compact('notificaciones'));
     }
 
-    /** ----------------------------------------------
-     *  LISTAR NOTIFICACIONES (AJAX JSON)
-     * ----------------------------------------------*/
-    public function listarNotificaciones()
+    /* ============================================================
+     * LISTAR NOTIFICACIONES (JSON)
+     * ============================================================*/
+    public function listarJson()
     {
-        $userId = Auth::id();
-
-        $notificaciones = Notificacion::where('id_usuario_receptor', $userId)
-            ->orderBy('fecha', 'desc')
-            ->get();
-
-        return response()->json($notificaciones);
+        return response()->json(
+            Notificacion::obtenerPorUsuario(Auth::id())
+        );
     }
 
-    /** ----------------------------------------------
-     *  INSERTAR NOTIFICACIÓN DE INTERÉS
-     * ----------------------------------------------*/
+    /* ============================================================
+     * INSERTAR NOTIFICACIÓN DE INTERÉS
+     * ============================================================*/
     public function store(Request $request)
     {
-        $request->validate([
-            'id_vendedor' => 'required',
-            'id_producto' => 'required',
+        $validated = $request->validate([
+            'id_vendedor' => 'required|integer',
+            'id_producto' => 'required|integer',
             'mensaje'     => 'nullable|string'
         ]);
 
-        $notificacion = Notificacion::create([
-            'id_usuario_receptor' => $request->id_vendedor,
-            'id_usuario_emisor'   => Auth::id(),
-            'id_producto'         => $request->id_producto,
-            'mensaje'             => $request->mensaje ?? "Estoy interesado en tu producto.",
-            'tipo'                => 'interes',
-            'leida'               => 0,
-        ]);
+        $mensaje = $validated['mensaje'] ?? "Estoy interesado en tu producto.";
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificación enviada.',
-            'data'    => $notificacion
-        ]);
+        $notificacion = Notificacion::insertar(
+            $validated['id_vendedor'],
+            Auth::id(),
+            $validated['id_producto'],
+            $mensaje,
+            'interes'
+        );
+
+        if ($notificacion) {
+            return response()->json(['success' => true, 'message' => 'Notificación enviada']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Error al crear notificación'], 500);
     }
 
-    /** ----------------------------------------------
-     *  MARCAR COMO LEÍDO (varios)
-     * ----------------------------------------------*/
+    /* ============================================================
+     * MARCAR VARIAS NOTIFICACIONES COMO LEÍDAS
+     * ============================================================*/
     public function marcarComoLeido(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array'
-        ]);
+        $ids = $request->input('ids', []);
 
-        Notificacion::whereIn('id', $request->ids)
-            ->update(['leida' => 1]);
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'IDs inválidos']);
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificaciones marcadas como leídas.'
-        ]);
+        Notificacion::marcarComoLeido($ids);
+
+        return response()->json(['success' => true, 'message' => 'Notificaciones marcadas como leídas']);
     }
 
-    /** ----------------------------------------------
-     *  ELIMINAR SELECCIONADAS
-     * ----------------------------------------------*/
-    public function eliminarSeleccionadas(Request $request)
+    /* ============================================================
+     * ELIMINAR VARIAS NOTIFICACIONES
+     * ============================================================*/
+    public function eliminarVarias(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array'
-        ]);
+        $ids = $request->input('ids', []);
 
-        Notificacion::whereIn('id', $request->ids)->delete();
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'IDs inválidos']);
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificaciones eliminadas.'
-        ]);
+        Notificacion::eliminarVarias($ids);
+
+        return response()->json(['success' => true, 'message' => 'Notificaciones eliminadas']);
     }
 
-    /** ----------------------------------------------
-     *  ELIMINAR TODAS
-     * ----------------------------------------------*/
+    /* ============================================================
+     * ELIMINAR TODAS LAS NOTIFICACIONES DE UN USUARIO
+     * ============================================================*/
     public function eliminarTodas()
     {
-        $userId = Auth::id();
+        Notificacion::eliminarTodasUsuario(Auth::id());
 
-        Notificacion::where('id_usuario_receptor', $userId)->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Todas las notificaciones eliminadas.'
-        ]);
+        return response()->json(['success' => true, 'message' => 'Todas las notificaciones eliminadas']);
     }
 
-    /** ----------------------------------------------
-     *  RESPUESTA RÁPIDA (EMAIL + NOTIFICACIÓN INTERNA)
-     * ----------------------------------------------*/
+    /* ============================================================
+     * ENVIAR RESPUESTA RÁPIDA (Correo + notificación interna)
+     * ============================================================*/
     public function enviarRespuestaRapida(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'destinatarioEmail'   => 'required|email',
-            'destinatarioNombre'  => 'required',
+            'destinatarioNombre'  => 'required|string',
             'destinatarioId'      => 'required|integer',
             'destinatarioTelefono'=> 'nullable|string',
             'mensaje'             => 'required|string',
@@ -132,66 +116,46 @@ class NotificacionesController extends Controller
             'idProducto'          => 'required|integer'
         ]);
 
-        $vendedor = Auth::user();
+        $vendedor = User::find(Auth::id());
 
-        // ---- Enviar correo ----
-        $email = new PHPMailer(true);
-        $exito = true;
-        $mensajes = [];
-
+        /* =====================================================
+         * 1. Enviar correo
+         * =====================================================*/
         try {
-            $email->isSMTP();
-            $email->Host = 'smtp.gmail.com';
-            $email->SMTPAuth = true;
-            $email->Username = 'jsdmngzc@gmail.com';
-            $email->Password = 'uhcj wqsm ntvy ixxr';
-            $email->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $email->Port = 465;
-
-            $email->setFrom($vendedor->correo_usuario, $vendedor->nombreCompleto);
-            $email->addAddress($request->destinatarioEmail, $request->destinatarioNombre);
-
-            $email->isHTML(true);
-            $email->Subject = "Respuesta sobre {$request->nombreProducto}";
-            $email->Body = "
-                <p>Hola <strong>{$request->destinatarioNombre}</strong>,</p>
-                <p>{$vendedor->nombreCompleto} respondió:</p>
-                <blockquote>{$request->mensaje}</blockquote>
-                <p>Producto: <strong>{$request->nombreProducto}</strong></p>
-            ";
-
-            $email->send();
-            $mensajes[] = "Correo enviado.";
-        } catch (Exception $e) {
-            $exito = false;
-            $mensajes[] = "Fallo al enviar correo.";
+            Mail::send([], [], function ($message) use ($validated, $vendedor) {
+                $message->to($validated['destinatarioEmail'])
+                    ->subject("Respuesta de {$vendedor->nombreCompleto} sobre tu interés")
+                    ->setBody("
+                        <h3>Respuesta del vendedor</h3>
+                        <p>{$validated['mensaje']}</p>
+                        <p>Producto: {$validated['nombreProducto']}</p>
+                    ", 'text/html');
+            });
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al enviar correo']);
         }
 
-        // ---- Crear notificación interna ----
-        $notificacion = Notificacion::create([
-            'id_usuario_receptor' => $request->destinatarioId,
-            'id_usuario_emisor'   => Auth::id(),
-            'id_producto'         => $request->idProducto,
-            'mensaje'             => "Respuesta: {$request->mensaje}",
-            'tipo'                => 'respuesta',
-            'leida'               => 0,
-        ]);
+        /* =====================================================
+         * 2. Crear notificación interna
+         * =====================================================*/
+        Notificacion::insertar(
+            $validated['destinatarioId'],
+            Auth::id(),
+            $validated['idProducto'],
+            "Respuesta: {$validated['mensaje']}",
+            'respuesta'
+        );
 
-        if ($notificacion) {
-            $mensajes[] = "Notificación interna creada.";
-        } else {
-            $exito = false;
-            $mensajes[] = "Fallo al crear notificación interna.";
-        }
-
-        // ---- SMS Simulado ----
-        if (!empty($request->destinatarioTelefono)) {
-            $mensajes[] = "SMS simulado enviado.";
+        /* =====================================================
+         * 3. SMS SIMULADO
+         * =====================================================*/
+        if (!empty($validated['destinatarioTelefono'])) {
+            \Log::info("SMS SIMULADO a {$validated['destinatarioTelefono']}: {$validated['mensaje']}");
         }
 
         return response()->json([
-            'success' => $exito,
-            'message' => implode(" ", $mensajes)
+            'success' => true,
+            'message' => 'Respuesta enviada correctamente (Correo + Notificación interna)'
         ]);
     }
 }

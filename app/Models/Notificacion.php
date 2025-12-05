@@ -47,7 +47,7 @@ class Notificacion extends Model
     public static function obtenerPorUsuario($id_usuario_receptor)
     {
         return DB::table('notificaciones as n')
-            ->leftJoin('productosganaderos as pg', 'n.id_producto', '=', 'pg.id_producto')
+            ->leftJoin('productos_ganaderos as pg', 'n.id_producto', '=', 'pg.id_producto')
             ->leftJoin('usuarios as u', 'n.id_usuario_emisor', '=', 'u.id_usuario')
             ->where('n.id_usuario_receptor', $id_usuario_receptor)
             ->orderBy('n.fecha', 'desc')

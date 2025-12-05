@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detalleProducto.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/estyle.css') }}">
 </head>
 <body class="min-h-screen flex bg-gray-100 contenedorBody @yield('body_class')">
     @yield('content')
@@ -31,6 +32,7 @@
     <script src="{{ asset('js/tienda_online.js') }}"></script>
     <script src="{{ asset('js/product_modal.js') }}"></script>
     <script src="{{ asset('js/notificaciones.js') }}"></script>
+    <script src="{{ asset('js/notificaciones2.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
 
     <!-- <script src="https://www.powr.io/powr.js?platform=html"></script> -->
