@@ -345,7 +345,7 @@ class ProductosListaController extends Controller
 
         try {
             $producto = ProductoGanadero::where(function($q) use ($id) {
-                $q->where('id_producto', $id)->orWhere('id', $id);
+                $q->where('id_producto', $id);
             })->first();
 
             if (!$producto) {

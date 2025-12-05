@@ -45,7 +45,7 @@
             <span id="textInicio" class="{{ $textHiddenClass }}">Inicio</span>
         </a>
 
-        <a href="{{ url('notificaciones/listar') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+        <a href="{{ route('notificaciones.index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
             <i data-lucide="bell-dot"></i>
             <span id="textNotificacion" class="{{ $textHiddenClass }}">Notificaciones</span>
         </a>
