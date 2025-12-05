@@ -104,7 +104,7 @@
                 </form>
 
                 {{-- REGISTER --}}
-                <form action="{{ url('/modules/auth/controller.php?accion=registro') }}" method="POST" class="formulario__register">
+                <form action="{{ route('auth.registro') }}" method="POST" class="formulario__register">
                     @csrf
 
                     <h2>Regístrarse</h2>

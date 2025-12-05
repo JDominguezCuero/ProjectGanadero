@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('correo_usuario', 255)->index(); // INDEX
             $table->string('contrasena_usuario', 255);
             $table->string('direccion_usuario', 255)->nullable();
+            $table->string('imagen_url_usuario', 255)->nullable();
             $table->enum('estado', ['Activo', 'Inactivo', 'Otro'])->nullable();
             $table->timestamp('fecha_creacion')->useCurrent();
             $table->timestamp('fecha_ultimo_acceso')->nullable();
