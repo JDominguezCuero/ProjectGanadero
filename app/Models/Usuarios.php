@@ -20,6 +20,7 @@ class Usuarios extends Authenticatable
         'nombre_usuario',
         'correo_usuario',
         'direccion_usuario',
+        'imagen_url_usuario',
         'estado',
         'contrasena_usuario',
         'telefono_usuario',

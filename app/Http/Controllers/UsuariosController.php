@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Models\Usuarios;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+
 
 class UsuariosController extends Controller
 {
@@ -99,54 +101,96 @@ class UsuariosController extends Controller
         return view('usuarios.autenticacion');
     }
 
-    // REGISTRO
+    // REGISTRO (adaptado al estilo del login)
+    // REGISTRO (compatible con tu formulario: nombreCompleto, correoElectronico, usuario, contrasena)
     public function registro(Request $request)
     {
         if ($request->isMethod('post')) {
+            // Reglas básicas
+            $rules = [
+                'nombreCompleto'    => 'required|string|max:255',
+                'correoElectronico' => 'required|email|max:255|unique:usuarios,correo_usuario',
+                'usuario'           => 'required|string|max:100|unique:usuarios,nombre_usuario',
+                'contrasena'        => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/'
+                ],
+            ];
+
+            $messages = [
+                'required' => 'El campo :attribute es obligatorio.',
+                'correoElectronico.email' => 'Correo electrónico no válido.',
+                'correoElectronico.unique' => 'El correo electrónico ya está registrado.',
+                'usuario.unique' => 'El nombre de usuario ya está en uso.',
+                'contrasena.min' => 'La contraseña debe tener al menos :min caracteres.',
+                'contrasena.regex' => 'La contraseña debe incluir mayúscula, minúscula, número y carácter especial.'
+            ];
+
             try {
-                $mensjError = "";
+                $request->validate($rules, $messages);
 
-                $nombre = $request->input('nombreCompleto', '');
-                $correo = $request->input('correoElectronico', '');
-                $usuario = $request->input('usuario', '');
-                $contrasena = $request->input('contrasena', '');
-                $imagen_url = config('app.url') . '/modules/auth/perfiles/profileDefault.png';
+                $nombre = trim($request->input('nombreCompleto'));
+                $correo = trim($request->input('correoElectronico'));
+                $usuario = trim($request->input('usuario'));
+                $contrasena = $request->input('contrasena');
+                $imagen_url = config('app.url') . '/images/profileDefault.png';
 
-                if (!$this->camposNoVacios([$nombre, $correo, $usuario, $contrasena])) {
-                    $mensjError = "Todos los campos son obligatorios.";
-                    throw new \Exception($mensjError);
-                }
-                if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-                    $mensjError = "Correo electrónico no válido.";
-                    throw new \Exception($mensjError);
-                }
-                if (!$this->validarPassword($contrasena, 8)) {
-                    $mensjError = "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.";
-                    throw new \Exception($mensjError);
-                }
-                if (Usuarios::where('correo_usuario', $correo)->exists()) {
-                    $mensjError = "El correo electrónico ya está registrado.";
-                    throw new \Exception($mensjError);
-                }
+                // Iniciar transacción para detectar errores a nivel BD
+                DB::beginTransaction();
 
                 $nuevo = new Usuarios();
                 $nuevo->nombreCompleto = $nombre;
                 $nuevo->correo_usuario = $correo;
                 $nuevo->nombre_usuario = $usuario;
                 $nuevo->contrasena_usuario = Hash::make($contrasena);
-                $nuevo->imagen_url_Usuario = $imagen_url;
+                $nuevo->imagen_url_usuario = $imagen_url;
                 $nuevo->estado = 'Activo';
                 $nuevo->fecha_creacion = Carbon::now()->toDateTimeString();
                 $nuevo->save();
 
-                return redirect()->route('auth.login')->with('success', 1);
+                DB::commit();
+
+                return redirect()->route('autenticacion')->with([
+                    'login' => 1,
+                    'success' => 'Registro exitoso. Inicia sesión.'
+                ]);
+            } catch (QueryException $qe) {
+                DB::rollBack();
+                // Info detallada para el log (no se muestra al usuario)
+                Log::error('QueryException en registro usuario: ' . $qe->getMessage(), [
+                    'code' => $qe->getCode(),
+                    'sql' => $qe->getSql(),
+                    'bindings' => $qe->getBindings()
+                ]);
+                return redirect()->route('autenticacion')->with([
+                    'login' => 1,
+                    'error' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
+                ])->withInput();
+            } catch (\Illuminate\Validation\ValidationException $ve) {
+                $msg = implode(' ', $ve->errors()->flatten()->toArray());
+                return redirect()->route('autenticacion')->with([
+                    'login' => 1,
+                    'error' => $msg
+                ])->withInput();
             } catch (\Exception $e) {
-                return redirect()->route('auth.login')->with('success', 2)->with('error', $mensjError);
+                DB::rollBack();
+                // Log completo: mensaje y stack trace
+                Log::error('Excepción en registro usuario: ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return redirect()->route('autenticacion')->with([
+                    'login' => 1,
+                    'error' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
+                ])->withInput();
             }
-        } else {
-            return view('usuarios.autenticacion');
         }
+
+        return view('usuarios.autenticacion');
     }
+
 
     // AGREGAR
     public function agregar(Request $request)
