@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * -------------------------------------------------------------*/
     const RUTAS = {
         marcarLeido: "/notificaciones/marcar-leido",
-        eliminarVarias: "/notificaciones/eliminar-variass",
+        eliminarVarias: "/notificaciones/eliminar-varias",
         eliminarTodas: "/notificaciones/eliminar-todas",
         enviarRespuesta: "/notificaciones/enviar-respuesta-rapida"
     };
