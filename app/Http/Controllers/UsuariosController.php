@@ -82,12 +82,13 @@ class UsuariosController extends Controller
                     'error' => 'Usuario o contraseña incorrecta'
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ve) {
-                // Errores de validación -> regresar con mensaje
-                $msg = implode(' ', $ve->errors()->flatten()->toArray());
-                return redirect()->route('autenticacion')->with([
-                    'login' => 1,
-                    'error' => $msg
-                ])->withInput();
+                $mensajes = $ve->validator->errors()->all();
+                $msg = implode(' ', $mensajes);
+
+                return redirect()->route('autenticacion')
+                    ->with('login', 1)
+                    ->withErrors($ve->validator)
+                    ->withInput();
             } catch (\Exception $e) {
                 \Log::error('Error login: ' . $e->getMessage());
                 return redirect()->route('autenticacion')->with([
@@ -169,11 +170,13 @@ class UsuariosController extends Controller
                     'error' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
                 ])->withInput();
             } catch (\Illuminate\Validation\ValidationException $ve) {
-                $msg = implode(' ', $ve->errors()->flatten()->toArray());
-                return redirect()->route('autenticacion')->with([
-                    'login' => 1,
-                    'error' => $msg
-                ])->withInput();
+                $mensajes = $ve->validator->errors()->all(); // array de mensajes
+                $msg = implode(' ', $mensajes);
+
+                return redirect()->route('autenticacion')
+                    ->with('login', 1)
+                    ->withErrors($ve->validator)
+                    ->withInput();
             } catch (\Exception $e) {
                 DB::rollBack();
                 // Log completo: mensaje y stack trace
