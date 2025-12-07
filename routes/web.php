@@ -5,6 +5,7 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductosListaController;
 use App\Http\Controllers\InventarioAlimentosController;
+use App\Http\Controllers\NotificacionesController;
 
 
 /*
@@ -78,3 +79,12 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::resource('inventario', InventarioAlimentosController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Notificaciones
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/notificaciones', [NotificacionesController::class, 'index'])
+    ->name('notificaciones.index');
