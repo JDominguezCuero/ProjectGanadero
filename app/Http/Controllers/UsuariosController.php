@@ -130,7 +130,13 @@ class UsuariosController extends Controller
             ];
 
             try {
-                $request->validate($rules, $messages);
+                $validator = \Validator::make($request->all(), $rules, $messages);
+                if ($validator->fails()) {
+                    // Devuelve con errores de validación (se muestran con $errors en la vista)
+                    return redirect()->route('autenticacion')
+                        ->withErrors($validator)
+                        ->withInput();
+                }
 
                 $nombre = trim($request->input('nombreCompleto'));
                 $correo = trim($request->input('correoElectronico'));
@@ -138,7 +144,6 @@ class UsuariosController extends Controller
                 $contrasena = $request->input('contrasena');
                 $imagen_url = config('app.url') . '/images/profileDefault.png';
 
-                // Iniciar transacción para detectar errores a nivel BD
                 DB::beginTransaction();
 
                 $nuevo = new Usuarios();
@@ -153,46 +158,40 @@ class UsuariosController extends Controller
 
                 DB::commit();
 
+                // IMPORTANTE: NO enviar 'login' aquí — eso activa tu modal de acceso denegado.
                 return redirect()->route('autenticacion')->with([
-                    'login' => 1,
-                    'success' => 'Registro exitoso. Inicia sesión.'
+                    'success' => true,
+                    'message' => 'Registro exitoso. Inicia sesión.'
                 ]);
             } catch (QueryException $qe) {
                 DB::rollBack();
-                // Info detallada para el log (no se muestra al usuario)
                 Log::error('QueryException en registro usuario: ' . $qe->getMessage(), [
                     'code' => $qe->getCode(),
-                    'sql' => $qe->getSql(),
-                    'bindings' => $qe->getBindings()
+                    'sql' => method_exists($qe, 'getSql') ? $qe->getSql() : null,
+                    'bindings' => method_exists($qe, 'getBindings') ? $qe->getBindings() : null
                 ]);
-                return redirect()->route('autenticacion')->with([
-                    'login' => 1,
-                    'error' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
-                ])->withInput();
-            } catch (\Illuminate\Validation\ValidationException $ve) {
-                $mensajes = $ve->validator->errors()->all(); // array de mensajes
-                $msg = implode(' ', $mensajes);
 
-                return redirect()->route('autenticacion')
-                    ->with('login', 1)
-                    ->withErrors($ve->validator)
-                    ->withInput();
+                return redirect()->route('autenticacion')->with([
+                    'success' => false,
+                    'message' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
+                ])->withInput();
             } catch (\Exception $e) {
                 DB::rollBack();
-                // Log completo: mensaje y stack trace
                 Log::error('Excepción en registro usuario: ' . $e->getMessage(), [
                     'exception' => $e,
                     'trace' => $e->getTraceAsString()
                 ]);
+
                 return redirect()->route('autenticacion')->with([
-                    'login' => 1,
-                    'error' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
+                    'success' => false,
+                    'message' => 'Ocurrió un error al intentar registrar el usuario. Intente de nuevo.'
                 ])->withInput();
             }
         }
 
         return view('usuarios.autenticacion');
     }
+
 
 
     // AGREGAR

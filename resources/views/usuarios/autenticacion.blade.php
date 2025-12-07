@@ -7,61 +7,50 @@
 @section('content')
 
 {{-- Mostrar mensajes con showModal() --}}
-@if(session('success') == 2)
+@php
+    // Mensajes pasados desde el controlador
+    $flashSuccess = session('success', null);
+    $flashMessage = session('message', null);
+    $flashError = session('error', null);
+@endphp
+
+{{-- Validación de Laravel ($errors) --}}
+@if ($errors->any())
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            showModal(
-                '❌ Error al registrar',
-                '{{ session("error") ?? "Error desconocido, contáctese con el administrador" }}',
-                'error'
-            );
+            // Unir todos los errores en un solo string de forma segura
+            const errorsArray = @json($errors->all());
+            const errorsText = errorsArray.join(' ');
+            // Asegúrate que showModal esté definido antes; si no, mueve este script debajo.
+            showModal('❌ Errores de validación', errorsText || 'Error desconocido', 'error');
         });
     </script>
 @endif
 
-@if(session('success') == 1)
+{{-- Flash success/message --}}
+@if (!is_null($flashSuccess) && $flashSuccess)
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            showModal('✅ Registro Exitoso', 'Usuario registrado correctamente', 'success');
+            showModal('✅ Registro Exitoso', @json($flashMessage ?? 'Operación exitosa'), 'success');
+        });
+    </script>
+@elseif (!is_null($flashSuccess) && $flashSuccess === false)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showModal('❌ Error', @json($flashMessage ?? 'Ocurrió un error'), 'error');
         });
     </script>
 @endif
 
-
-{{-- Login fallido --}}
-@if(session('login') == 1)
+{{-- Login fallido (clave login / error) --}}
+@if (session('login'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            showModal(
-                '❌ Acceso Denegado',
-                '{{ session("error") }}',
-                'error'
-            );
+            showModal('❌ Acceso Denegado', @json($flashError ?? 'Acceso denegado'), 'error');
         });
     </script>
 @endif
 
-
-{{-- Restablecimiento --}}
-@if(session('enviado') == 2)
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            showModal(
-                '❌ Acceso Denegado',
-                '{{ session("error") ?? "Error desconocido, contacte al administrador" }}',
-                'error'
-            );
-        });
-    </script>
-@endif
-
-@if(session('enviado') == 1)
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            showModal('✅ Envío Exitoso', 'Verifica tu correo electrónico.', 'success');
-        });
-    </script>
-@endif
 
 
     <main>
