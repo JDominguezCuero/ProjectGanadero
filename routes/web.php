@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductosListaController;
 use App\Http\Controllers\InventarioAlimentosController;
 use App\Http\Controllers\NotificacionesController;
+use App\Http\Controllers\PerfilController;
 
 
 /*
@@ -88,3 +89,16 @@ Route::resource('inventario', InventarioAlimentosController::class);
 
 Route::get('/notificaciones', [NotificacionesController::class, 'index'])
     ->name('notificaciones.index');
+
+
+/*
+|--------------------------------------------------------------------------
+| Editar Perfil de Usuario
+|--------------------------------------------------------------------------
+*/
+Route::get('/perfil/{id?}', [PerfilController::class, 'listarUsuario'])
+    ->name('perfil.listarUsuario');
+
+Route::post('/perfil/actualizar', [PerfilController::class, 'actualizar'])
+    ->name('perfil.actualizar');
+ 

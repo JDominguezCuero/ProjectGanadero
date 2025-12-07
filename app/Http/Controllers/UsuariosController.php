@@ -70,7 +70,8 @@ class UsuariosController extends Controller
                         'id_usuario' => $usuario->id_usuario,
                         'correo_usuario' => $usuario->correo_usuario,
                         'rol' => $usuario->id_rol,
-                        'url_Usuario' => $usuario->imagen_url_Usuario,
+                        'url_Usuario' => $usuario->imagen_url_usuario,
+                        'imagen_url_usuario' => $usuario->imagen_url_usuario
                     ]);
 
                     return redirect()->route('home.index');
@@ -261,7 +262,7 @@ class UsuariosController extends Controller
             $nuevo->direccion_usuario = $direccion;
             $nuevo->estado = $estado;
             $nuevo->contrasena_usuario = Hash::make($contrasena);
-            $nuevo->imagen_url_Usuario = $imagen_url;
+            $nuevo->imagen_url_usuario = $imagen_url;
             $nuevo->fecha_creacion = Carbon::now()->toDateTimeString();
             $nuevo->save();
 
@@ -327,7 +328,7 @@ class UsuariosController extends Controller
                 $usuarioModel->direccion_usuario = $direccion;
                 $usuarioModel->estado = $estado;
                 $usuarioModel->id_rol = $rol_id;
-                $usuarioModel->imagen_url_Usuario = $imagen_url;
+                $usuarioModel->imagen_url_usuario = $imagen_url;
                 if (!empty($contrasena)) {
                     $usuarioModel->contrasena_usuario = Hash::make($contrasena);
                 }

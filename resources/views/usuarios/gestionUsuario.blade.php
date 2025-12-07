@@ -86,8 +86,8 @@
 
                                     {{-- IMAGEN --}}
                                     <td class="py-2 px-4 text-center">
-                                        @if(!empty($item['imagen_url_Usuario']))
-                                            <img src="{{ $item['imagen_url_Usuario'] }}"
+                                        @if(!empty($item['imagen_url_usuario']))
+                                            <img src="{{ $item['imagen_url_usuario'] }}"
                                                 alt="Foto"
                                                 class="product-thumbnail"
                                                 style="width:55px; height:55px; border-radius:8px;">
@@ -116,7 +116,7 @@
                                                 data-target="#modalEditarUsuario"
 
                                                 data-id="{{ $item['id_usuario'] }}"
-                                                data-imagen_url="{{ $item['imagen_url_Usuario'] }}"
+                                                data-imagen_url="{{ $item['imagen_url_usuario'] }}"
                                                 data-nombre="{{ $item['nombreCompleto'] }}"
                                                 data-nombreUsuario="{{ $item['nombre_usuario'] }}"
                                                 data-correo="{{ $item['correo_usuario'] }}"

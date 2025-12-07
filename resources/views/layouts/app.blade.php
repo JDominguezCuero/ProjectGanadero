@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detalleProducto.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/estilos2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estyle.css') }}">
 </head>
 <body class="min-h-screen flex bg-gray-100 contenedorBody @yield('body_class')">
