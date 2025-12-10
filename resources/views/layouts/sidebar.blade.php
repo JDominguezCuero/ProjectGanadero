@@ -14,6 +14,7 @@
     $sessionNombre = session('nombre', '');
     $sessionUsuario = session('usuario', '');
     $sessionRol = session('rol', null);
+    $sessionId = session('id_usuario', null);
 @endphp
 
 <aside id="sidebar" class="bg-green-900 text-white {{ $sidebarWidthClass }} transition-all duration-300 flex flex-col p-4 h-full fixed top-0 left-0 h-screen overflow-y-auto z-50">
@@ -34,9 +35,11 @@
         <h4 class="text-lg font-semibold" style="color:white;">{{ $sessionNombre }}</h4>
         <p class="text-sm text-gray-300">{{ $sessionUsuario }}</p>
 
-        <a href="{{ url('perfil/listarUsuario') }}">
-            <button class="bg-green-700 mt-4 px-4 py-2 rounded hover:bg-green-800 text-white">Editar</button>
+        <a href="{{ route('perfil.listarUsuario', ['id' => $sessionId]) }}"
+        class="inline-block bg-green-700 mt-4 px-4 py-2 rounded hover:bg-green-800 text-white">
+            Editar
         </a>
+
     </div>
 
     <nav class="mt-10 space-y-4">

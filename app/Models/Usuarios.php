@@ -25,7 +25,6 @@ class Usuarios extends Authenticatable
         'contrasena_usuario',
         'telefono_usuario',
         'id_rol',
-        'imagen_url_Usuario',
         'token_expiracion',
         'token_recuperacion',
         'fecha_creacion',
