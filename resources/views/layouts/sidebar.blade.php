@@ -67,7 +67,7 @@
 
         {{-- Menú administrador --}}
         @if ($sessionRol == 1)
-            <a href="{{ url('auth/listar') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
+            <a href="{{ route('usuarios.index') }}" class="flex items-center space-x-2 hover:bg-green-800 p-2 rounded" style="color:white;">
                 <i data-lucide="user"></i>
                 <span id="textPerfil" class="{{ $textHiddenClass }}">Administrar Usuarios</span>
             </a>

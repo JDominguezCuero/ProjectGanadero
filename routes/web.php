@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductosListaController;
 use App\Http\Controllers\InventarioAlimentosController;
 use App\Http\Controllers\NotificacionesController;
+use App\Http\Controllers\GestionUsuariosController;
 
 
 /*
@@ -88,3 +89,86 @@ Route::resource('inventario', InventarioAlimentosController::class);
 
 Route::get('/notificaciones', [NotificacionesController::class, 'index'])
     ->name('notificaciones.index');
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS DE ADMINISTRAR USUARIOS
+|--------------------------------------------------------------------------
+*/
+
+// Login (mostrar formulario)
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+// Procesar login
+Route::post('/login', [GestionUsuariosController::class, 'login'])->name('login.procesar');
+
+// Logout
+Route::get('/logout', [GestionUsuariosController::class, 'logout'])->name('logout');
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTA DASHBOARD
+|--------------------------------------------------------------------------
+*/
+Route::get('/dashboard', function () {
+    return view('dashboard.index');
+})->middleware('auth')->name('dashboard');
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS DE REGISTRO DE USUARIOS (PÚBLICO)
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/registrarse', [GestionUsuariosController::class, 'store'])
+    ->name('usuarios.store');
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS CRUD DE USUARIOS (ADMIN)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->group(function () {
+
+    // Listar usuarios
+    Route::get('/usuarios', [GestionUsuariosController::class, 'index'])
+        ->name('usuarios.index');
+
+    // Agregar usuario
+    Route::post('/usuarios/agregar', [GestionUsuariosController::class, 'agregar'])
+        ->name('usuarios.agregar');
+
+    // Editar usuario
+    Route::post('/usuarios/editar', [GestionUsuariosController::class, 'update'])->name('usuarios.editar');
+
+
+    // Eliminar usuario
+    Route::get('/usuarios/{user}', [GestionUsuariosController::class, 'destroy'])
+        ->name('usuarios.eliminar');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS RECUPERAR CONTRASEÑA
+|--------------------------------------------------------------------------
+*/
+
+// Enviar enlace al correo
+Route::post('/recuperar', [GestionUsuariosController::class, 'enviarEnlaceRestablecimiento'])
+    ->name('password.enviar');
+
+// Mostrar formulario de nueva contraseña
+Route::get('/restablecer', [GestionUsuariosController::class, 'mostrarFormularioNuevaContrasena'])
+    ->name('password.reset.form');
+
+// Restablecer contraseña
+Route::post('/restablecer', [GestionUsuariosController::class, 'restablecer'])
+    ->name('password.reset.enviar');

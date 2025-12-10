@@ -140,6 +140,31 @@
             });
         });
     </script>
+
+    <script>
+    // Búsqueda client-side (sin cambios)
+    function myFunction() {
+        let input = document.getElementById("myInput");
+        let filter = input.value.toUpperCase();
+        let table = document.getElementById("myTable");
+        let tr = table.getElementsByTagName("tr");
+        for (let i = 1; i < tr.length; i++) {
+            let rowContainsFilter = false;
+            const tds = tr[i].getElementsByTagName("td");
+            for (let j = 1; j < tds.length - 1; j++) {
+                const td = tds[j];
+                if (td) {
+                    let txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        break;
+                    }
+                }
+            }
+            tr[i].style.display = rowContainsFilter ? "" : "none";
+        }
+    }
+</script>
     
 </body>
 </html>
